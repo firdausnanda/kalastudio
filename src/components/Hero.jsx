@@ -70,9 +70,24 @@ export default function Hero() {
                   <div className="w-20 h-4 bg-black rounded-full"></div>
                 </div>
                 <div className="h-full pt-8 flex flex-col bg-[#F0F2F5]">
-                  <div className="bg-primary px-6 py-4 text-white flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white/20"></div>
-                    <span className="font-bold text-sm">KalaStudio Assistant</span>
+                  <div className="bg-primary px-3 py-3 text-white flex items-center justify-between shadow-md relative z-20">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-xl">arrow_back</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                          <span className="material-symbols-outlined text-3xl">account_circle</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-sm leading-tight">KalaStudio Assistant</span>
+                          <span className="text-[10px] opacity-80 leading-tight">Online</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 pr-1">
+                      <span className="material-symbols-outlined text-xl cursor-not-allowed">videocam</span>
+                      <span className="material-symbols-outlined text-xl cursor-not-allowed">call</span>
+                      <span className="material-symbols-outlined text-xl cursor-not-allowed">more_vert</span>
+                    </div>
                   </div>
                   <div className="p-4 flex flex-col gap-3 overflow-hidden h-full justify-end pb-4">
                     {/* ... (isi chat tetap sama) ... */}
