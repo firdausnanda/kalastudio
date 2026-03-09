@@ -67,8 +67,14 @@ export async function loginAction(prevState, formData) {
 
     return { success: true };
   } catch (error) {
-    console.error('Login action error:', error);
-    return { error: 'Terjadi kesalahan pada server. Silakan coba lagi.' };
+    console.error('--- Login Action Error Start ---');
+    console.error('Error Object:', error);
+    if (error.cause) console.error('Error Cause:', error.cause);
+    if (error.code) console.error('Error Code:', error.code);
+    if (error.sqlMessage) console.error('SQL Message:', error.sqlMessage);
+    console.error('--- Login Action Error End ---');
+
+    return { error: 'Terjadi kesalahan pada koneksi database. Pastikan IP Anda sudah di-whitelist dan kredensial benar.' };
   }
 }
 

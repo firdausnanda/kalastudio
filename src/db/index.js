@@ -11,6 +11,13 @@ const poolOptions = {
   port: Number(process.env.DB_PORT || 3306),
 };
 
+console.log('--- DB Config Debug ---');
+console.log('HOST:', process.env.DB_HOST);
+console.log('USER:', process.env.DB_USERNAME);
+console.log('DB:', process.env.DB_DATABASE);
+if (!process.env.DB_HOST) console.error('❌ DB_HOST IS MISSING!');
+console.log('-----------------------');
+
 // Use globalThis to keep the connection across HMR (Hot Module Replacement)
 const globalForDb = globalThis;
 const poolConnection = globalForDb.poolConnection ?? mysql.createPool(poolOptions);
