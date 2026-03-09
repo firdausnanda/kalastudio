@@ -14,8 +14,8 @@ export default function PricingPage() {
     {
       name: "Starter",
       desc: "Cocok untuk UMKM baru yang ingin mulai digitalisasi keuangan.",
-      monthlyPrice: 149000,
-      annualPrice: 99000,
+      monthlyPrice: 99000,
+      annualPrice: 79000,
       features: [
         "100 Token",
         "Hingga 500 Transaksi / Bulan",
@@ -29,8 +29,8 @@ export default function PricingPage() {
     {
       name: "Business",
       desc: "Pilihan terbaik untuk bisnis yang sedang berkembang pesat.",
-      monthlyPrice: 299000,
-      annualPrice: 225000,
+      monthlyPrice: 249000,
+      annualPrice: 199000,
       features: [
         "1000 Token",
         "Transaksi Tak Terbatas",
@@ -45,8 +45,7 @@ export default function PricingPage() {
     {
       name: "Professional",
       desc: "Solusi lengkap untuk korporasi dengan kebutuhan integrasi.",
-      monthlyPrice: 599000,
-      annualPrice: 450000,
+      isCustomPrice: true,
       features: [
         "Custom Dashboard & Branding",
         "Integrasi API & Webhook",
@@ -138,12 +137,20 @@ export default function PricingPage() {
                   </div>
 
                   <div className="mb-8">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl md:text-5xl font-black">{formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}</span>
-                      <span className="text-slate-500 font-bold">/bln</span>
-                    </div>
-                    {isAnnual && (
-                      <p className="text-xs text-slate-400 mt-2 font-medium">Ditagih tahunan: {formatPrice(plan.annualPrice * 12)}</p>
+                    {plan.isCustomPrice ? (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl md:text-5xl font-black">Custom</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-4xl md:text-5xl font-black">{formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}</span>
+                          <span className="text-slate-500 font-bold">/bln</span>
+                        </div>
+                        {isAnnual && (
+                          <p className="text-xs text-slate-400 mt-2 font-medium">Ditagih tahunan: {formatPrice(plan.annualPrice * 12)}</p>
+                        )}
+                      </>
                     )}
                   </div>
 
