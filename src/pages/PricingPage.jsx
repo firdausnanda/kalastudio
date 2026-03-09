@@ -36,7 +36,6 @@ export default function PricingPage() {
         "Transaksi Tak Terbatas",
         "Laporan Lengkap & Ekspor Excel",
         "Manajemen Stok Produk",
-        "Multi-User Access (3 Staf)",
         "Dukungan Prioritas 24/7"
       ],
       cta: "Coba Sekarang",
