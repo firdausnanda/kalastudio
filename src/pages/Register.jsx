@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 
-export default function Login() {
+export default function Register() {
   return (
     <div className="bg-slate-50 dark:bg-[#1a202c] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
       <Header />
@@ -10,11 +10,23 @@ export default function Login() {
         <div className="w-full max-w-[440px]">
           <div className="bg-white dark:bg-slate-900/50 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 rounded-xl p-8 md:p-10 transition-colors duration-300">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2 dark:text-white">Selamat Datang Kembali</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">Kelola keuangan Anda lebih cerdas melalui WhatsApp</p>
+              <h2 className="text-2xl font-bold mb-2 dark:text-white">Buat Akun Baru</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">Mulai kelola keuangan Anda lebih cerdas hari ini</p>
             </div>
 
             <form action="#" className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Nama Lengkap</label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">person</span>
+                  <input
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none dark:text-slate-200 dark:placeholder-slate-500"
+                    placeholder="Nama Lengkap Anda"
+                    type="text"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Email</label>
                 <div className="relative">
@@ -28,10 +40,7 @@ export default function Login() {
               </div>
 
               <div>
-                <div className="flex justify-between mb-2">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Kata Sandi</label>
-                  <a className="text-xs font-semibold text-primary hover:underline" href="#">Lupa kata sandi?</a>
-                </div>
+                <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Kata Sandi</label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock</span>
                   <input
@@ -45,20 +54,22 @@ export default function Login() {
                 </div>
               </div>
 
-              <div className="flex items-center">
+              <div className="flex items-start mt-4">
                 <input
-                  className="w-4 h-4 text-primary bg-slate-100 border-slate-300 rounded focus:ring-primary dark:bg-slate-800 dark:border-slate-600 dark:focus:ring-offset-slate-900"
-                  id="remember"
+                  className="w-4 h-4 mt-0.5 text-primary bg-slate-100 border-slate-300 rounded focus:ring-primary dark:bg-slate-800 dark:border-slate-600 dark:focus:ring-offset-slate-900"
+                  id="terms"
                   type="checkbox"
                 />
-                <label className="ml-2 text-sm text-slate-600 dark:text-slate-400" htmlFor="remember">Ingat saya</label>
+                <label className="ml-2 text-sm text-slate-600 dark:text-slate-400 leading-tight" htmlFor="terms">
+                  Saya setuju dengan <Link to="/syarat-ketentuan" className="text-primary hover:underline font-medium">Syarat & Ketentuan</Link> dan <Link to="/kebijakan-privasi" className="text-primary hover:underline font-medium">Kebijakan Privasi</Link>
+                </label>
               </div>
 
               <button
-                className="group w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-primary/30 dark:shadow-primary/20 flex justify-center items-center gap-2 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]"
+                className="group w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-primary/30 dark:shadow-primary/20 flex justify-center items-center gap-2 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] mt-6"
                 type="submit"
               >
-                Masuk
+                Daftar Sekarang
                 <span className="material-symbols-outlined text-xl transition-transform duration-300 group-hover:translate-x-1.5">arrow_forward</span>
               </button>
             </form>
@@ -68,7 +79,7 @@ export default function Login() {
                 <div className="w-full border-t border-slate-200 dark:border-slate-800 transition-colors duration-300"></div>
               </div>
               <div className="relative flex justify-center text-sm uppercase">
-                <span className="bg-white dark:bg-slate-900 px-4 text-slate-500 dark:text-slate-400 transition-colors duration-300">Atau masuk dengan</span>
+                <span className="bg-white dark:bg-slate-900 px-4 text-slate-500 dark:text-slate-400 transition-colors duration-300">Atau daftar dengan</span>
               </div>
             </div>
 
@@ -81,13 +92,13 @@ export default function Login() {
                 className="w-5 h-5"
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
               />
-              Sign in Google
+              Daftar dengan Google
             </button>
           </div>
 
           <p className="mt-8 text-center text-slate-600 dark:text-slate-400 text-sm">
-            Belum punya akun? {" "}
-            <Link className="font-bold text-primary hover:text-primary/80 transition-colors" to="/register">Daftar gratis</Link>
+            Sudah punya akun? {" "}
+            <Link className="font-bold text-primary hover:text-primary/80 transition-colors" to="/login">Masuk sekarang</Link>
           </p>
         </div>
       </main>

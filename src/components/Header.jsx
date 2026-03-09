@@ -73,7 +73,7 @@ export default function Header() {
             Masuk
           </Link>
 
-          <Link className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] hidden sm:block" to="/login">
+          <Link className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] hidden sm:block" to="/register">
             Coba Gratis
           </Link>
 
@@ -129,9 +129,9 @@ export default function Header() {
               <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">login</span>
             </Link>
             <div className="px-4 pb-4">
-              <button className="w-full bg-primary text-white py-5 rounded-[20px] font-black text-lg shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] mt-4">
+              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="w-full bg-primary text-white py-5 rounded-[20px] font-black text-lg shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] mt-4 flex items-center justify-center">
                 Coba Gratis Sekarang
-              </button>
+              </Link>
             </div>
           </div>
         </div>
