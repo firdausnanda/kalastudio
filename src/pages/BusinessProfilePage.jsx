@@ -108,7 +108,7 @@ export default function BusinessProfilePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Alamat Kantor</label>
+                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Alamat Usaha</label>
                     <textarea
                       rows="3"
                       className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
