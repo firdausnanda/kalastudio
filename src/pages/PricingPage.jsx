@@ -86,7 +86,7 @@ export default function PricingPage() {
     <div className="bg-white text-slate-900 font-display transition-colors duration-300 dark:bg-slate-900 min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-grow pt-20">
+      <main className="flex-grow">
         {/* Pricing Header */}
         <section className="py-20 bg-slate-50 dark:bg-slate-800/30 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

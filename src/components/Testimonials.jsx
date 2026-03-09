@@ -31,7 +31,7 @@ export default function Testimonials() {
               <span className="material-symbols-outlined">star</span>
               <span className="material-symbols-outlined">star</span>
             </div>
-            <p className="text-slate-700 dark:text-slate-300 italic mb-8 leading-relaxed transition-colors">"Sangat terbantu buat pantau piutang pelanggan. ChatKas ngingetin otomatis lewat WA, jadi nggak enak nagihnya pun berkurang."</p>
+            <p className="text-slate-700 dark:text-slate-300 italic mb-8 leading-relaxed transition-colors">"Sangat terbantu buat pantau piutang pelanggan. AI-nya ngingetin otomatis lewat WA, jadi nggak enak nagihnya pun berkurang."</p>
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors" data-alt="Foto profil pengguna pria pemilik toko grosir"></div>
               <div>

@@ -80,7 +80,7 @@ export default function Login() {
                 className="w-5 h-5"
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
               />
-              Google
+              Sign in Google
             </button>
           </div>
 

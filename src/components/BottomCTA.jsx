@@ -10,7 +10,7 @@ export default function BottomCTA() {
         <button className="bg-primary hover:bg-primary/90 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl shadow-primary/40 transition-all duration-300 hover:shadow-[0_25px_50px_-12px_rgba(156,65,61,0.5)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]">
           Mulai Gratis 14 Hari
         </button>
-        <p className="mt-6 text-slate-400 text-sm font-medium">Sudah bergabung dengan 5,000+ UMKM lainnya</p>
+        <p className="mt-6 text-slate-400 text-sm font-medium">Sudah bergabung dengan 100+ UMKM lainnya</p>
       </div>
     </section>
   );

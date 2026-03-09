@@ -33,7 +33,7 @@ export default function PartnershipPage() {
     <div className="bg-white text-slate-900 font-display transition-colors duration-300 dark:bg-slate-900 min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-grow pt-20">
+      <main className="flex-grow">
         {/* Partnership Hero */}
         <section className="relative py-20 md:py-32 overflow-hidden">
           <div className="absolute inset-0 bg-slate-50 dark:bg-slate-800/30 -skew-y-3 origin-top-left transition-colors duration-300"></div>
