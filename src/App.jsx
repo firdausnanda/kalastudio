@@ -9,6 +9,7 @@ import BlogPage from './pages/BlogPage';
 import PanduanPage from './pages/PanduanPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import AboutPage from './pages/AboutPage';
 import NProgressLoader from './components/NProgressLoader';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/panduan" element={<PanduanPage />} />
         <Route path="/syarat-ketentuan" element={<TermsPage />} />
         <Route path="/kebijakan-privasi" element={<PrivacyPage />} />
+        <Route path="/tentang-kami" element={<AboutPage />} />
       </Routes>
     </Router>
   );
