@@ -87,6 +87,15 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
             <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
           </button>
 
+          {/* AI Token Indicator */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 rounded-2xl group hover:bg-amber-500/20 transition-all" title="Sisa Token AI untuk pemrosesan WhatsApp">
+            <span className="material-symbols-outlined text-amber-500 text-[18px] group-hover:scale-110 transition-transform font-black">bolt</span>
+            <div className="flex flex-col items-start leading-none gap-0.5">
+              <span className="text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">AI Token</span>
+              <span className="text-[11px] font-black text-slate-900 dark:text-white">850 Sisa</span>
+            </div>
+          </div>
+
           <div className="relative">
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
