@@ -66,7 +66,7 @@ export default function AboutPage() {
                 </p>
                 <div className="grid grid-cols-2 gap-8 pt-4">
                   <div>
-                    <div className="text- primary text-4xl font-black mb-1">100+</div>
+                    <div className="text- primary text-4xl font-black mb-1 dark:text-white">100+</div>
                     <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">Pengguna Aktif</div>
                   </div>
                   <div>

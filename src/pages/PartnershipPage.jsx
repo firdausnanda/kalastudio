@@ -64,7 +64,7 @@ export default function PartnershipPage() {
         <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-black mb-4">Pilih Program Anda</h2>
+              <h2 className="text-3xl md:text-4xl dark:text-white  font-black mb-4">Pilih Program Anda</h2>
               <p className="text-slate-500 dark:text-slate-400">Tentukan cara terbaik untuk kita berkolaborasi.</p>
             </div>
 
@@ -74,7 +74,7 @@ export default function PartnershipPage() {
                   <div className="w-16 h-16 bg-primary text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-primary/20">
                     <span className="material-symbols-outlined text-3xl">{item.icon}</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
+                  <h3 className="text-2xl font-bold mb-4 dark:text-white">{item.title}</h3>
                   <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
                     {item.desc}
                   </p>
@@ -97,22 +97,22 @@ export default function PartnershipPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white dark:bg-slate-900 p-8 md:p-12 rounded-[32px] shadow-2xl border border-slate-100 dark:border-slate-800">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-black mb-4">Hubungi Tim Partnership</h2>
+                <h2 className="text-3xl font-black mb-4 dark:text-white">Hubungi Tim Partnership</h2>
                 <p className="text-slate-500">Ajukan pertanyaan atau mulai diskusi kemitraan hari ini.</p>
               </div>
               <form className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-bold mb-2">Nama Lengkap</label>
+                    <label className="block text-sm font-bold mb-2 dark:text-white">Nama Lengkap</label>
                     <input type="text" className="w-full px-4 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Masukkan nama..." />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-2">Email Bisnis</label>
+                    <label className="block text-sm font-bold mb-2 dark:text-white">Email Bisnis</label>
                     <input type="email" className="w-full px-4 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 outline-none" placeholder="email@bisnis.com" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold mb-2">Pesan / Minat Kemitraan</label>
+                  <label className="block text-sm font-bold mb-2 dark:text-white">Pesan / Minat Kemitraan</label>
                   <textarea rows="4" className="w-full px-4 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Ceritakan sedikit tentang rencana kolaborasi Anda..."></textarea>
                 </div>
                 <button className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 transition-all duration-300">

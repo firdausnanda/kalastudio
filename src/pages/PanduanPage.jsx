@@ -73,7 +73,7 @@ export default function PanduanPage() {
                       <span className="material-symbols-outlined text-2xl">{cat.icon}</span>
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold mb-3">{cat.title}</h3>
+                      <h3 className="text-2xl font-bold mb-3 dark:text-white">{cat.title}</h3>
                       <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 leading-relaxed">
                         {cat.description}
                       </p>
@@ -98,7 +98,7 @@ export default function PanduanPage() {
         {/* Popular Articles List */}
         <section className="py-24 bg-slate-50 dark:bg-slate-800/20 transition-colors duration-300 px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-black mb-10 text-center md:text-left">Pertanyaan Populer</h2>
+            <h2 className="text-3xl font-black mb-10 text-center md:text-left dark:text-white">Pertanyaan Populer</h2>
             <div className="space-y-4">
               {[
                 "Bagaimana cara AI KalaStudio mengenali suara saya?",

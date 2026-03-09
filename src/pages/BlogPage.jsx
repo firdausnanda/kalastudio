@@ -89,7 +89,7 @@ export default function BlogPage() {
               </div>
               <div className="lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                 <span className="text-primary font-black text-xs uppercase tracking-widest mb-4">Artikel Pilihan</span>
-                <h2 className="text-3xl md:text-4xl font-black mb-6 leading-tight">Membangun Bisnis yang Tahan Banting di Era Digital</h2>
+                <h2 className="text-3xl md:text-4xl font-black mb-6 leading-tight dark:text-white">Membangun Bisnis yang Tahan Banting di Era Digital</h2>
                 <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed text-lg italic">
                   "Digitalisasi bukan lagi pilihan, melainkan keharusan. Namun, strategi yang tepat adalah kunci kemenangan..."
                 </p>
@@ -109,7 +109,7 @@ export default function BlogPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 text-center md:text-left">
               <div>
-                <h2 className="text-3xl font-black mb-2">Terbitan Terbaru</h2>
+                <h2 className="text-3xl font-black mb-2 dark:text-white">Terbitan Terbaru</h2>
                 <p className="text-slate-500">Artikel edukasi harian untuk kemajuan usaha Anda.</p>
               </div>
               <div className="flex bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
@@ -139,7 +139,7 @@ export default function BlogPage() {
                       <span className="material-symbols-outlined text-[14px]">calendar_today</span>
                       {post.date}
                     </div>
-                    <h3 className="text-xl font-bold mb-4 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                    <h3 className="dark:text-white text-xl font-bold mb-4 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                       {post.title}
                     </h3>
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
@@ -151,7 +151,7 @@ export default function BlogPage() {
             </div>
 
             <div className="mt-20 text-center">
-              <button className="border-2 border-slate-200 dark:border-slate-800 hover:border-primary px-10 py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-1">
+              <button className="dark:text-white border-2 border-slate-200 dark:border-slate-800 hover:border-primary px-10 py-4 rounded-xl font-bold transition-all duration-300 hover:-translate-y-1">
                 Tampilkan Lebih Banyak
               </button>
             </div>

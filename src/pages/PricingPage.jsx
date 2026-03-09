@@ -119,7 +119,7 @@ export default function PricingPage() {
               {plans.map((plan, idx) => (
                 <div
                   key={idx}
-                  className={`bg-white dark:bg-slate-900 p-10 rounded-[40px] border-2 transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl flex flex-col ${plan.popular
+                  className={`dark:text-white bg-white dark:bg-slate-900 p-10 rounded-[40px] border-2 transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl flex flex-col ${plan.popular
                     ? 'border-primary shadow-2xl scale-105 relative dark:shadow-primary/10'
                     : 'border-slate-100 dark:border-slate-800 shadow-xl'
                     }`}
@@ -178,13 +178,13 @@ export default function PricingPage() {
         <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-black mb-4">Pertanyaan Umum</h2>
+              <h2 className="text-3xl md:text-4xl font-black mb-4 dark:text-white">Pertanyaan Umum</h2>
               <p className="text-slate-500">Semua yang perlu Anda ketahui tentang pembayaran dan paket.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
               {faqs.map((faq, i) => (
                 <div key={i}>
-                  <h4 className="font-bold text-lg mb-3 flex items-start gap-3">
+                  <h4 className="dark:text-white font-bold text-lg mb-3 flex items-start gap-3">
                     <span className="text-primary mt-1 font-black">Q.</span>
                     {faq.q}
                   </h4>
