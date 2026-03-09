@@ -12,7 +12,7 @@ export default function AboutPage() {
     {
       year: "2025",
       title: "Awal Mula",
-      description: "KalaStudio lahir dari sebuah garasi kecil dengan visi mendigitalisasi UMKM Indonesia melalui platform yang paling mereka kenal: WhatsApp."
+      description: "KalaStudio berawal dari sebuah diskusi santai di tempat ngopi, dari obrolan santai yang kemudian berkembang menjadi visi besar: mendigitalisasi UMKM Indonesia melalui platform yang paling mereka kenal, yaitu WhatsApp."
     },
     {
       year: "2025",

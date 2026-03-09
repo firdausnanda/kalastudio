@@ -8,6 +8,7 @@ import AddTransactionPage from './pages/AddTransactionPage';
 import ReportPage from './pages/ReportPage';
 import IntegrationPage from './pages/IntegrationPage';
 import BusinessProfilePage from './pages/BusinessProfilePage';
+import SubscriptionPage from './pages/SubscriptionPage';
 import FeaturesPage from './pages/FeaturesPage';
 import PartnershipPage from './pages/PartnershipPage';
 import PricingPage from './pages/PricingPage';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/laporan" element={<ReportPage />} />
         <Route path="/integrasi" element={<IntegrationPage />} />
         <Route path="/profil" element={<BusinessProfilePage />} />
+        <Route path="/langganan" element={<SubscriptionPage />} />
         <Route path="/fitur" element={<FeaturesPage />} />
         <Route path="/partnership" element={<PartnershipPage />} />
         <Route path="/harga" element={<PricingPage />} />

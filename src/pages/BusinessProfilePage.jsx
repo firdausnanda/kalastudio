@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import DashboardFooter from '../components/DashboardFooter';
@@ -8,6 +9,7 @@ export default function BusinessProfilePage() {
   const [formData, setFormData] = useState({
     businessName: 'Kala Studio',
     businessType: 'Agency Kreatif',
+    ownerName: 'Firdaus Nanda',
     email: 'contact@kalastudio.com',
     phone: '081234567890',
     address: 'Jl. Senopati No. 12, Jakarta Selatan',
@@ -66,6 +68,15 @@ export default function BusinessProfilePage() {
               <div className="lg:col-span-2 space-y-8">
                 <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-8">
                   <div className="grid md:grid-cols-2 gap-8">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Nama Pemilik Usaha</label>
+                      <input
+                        type="text"
+                        className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
+                        value={formData.ownerName}
+                        onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
+                      />
+                    </div>
                     <div>
                       <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Nama Bisnis</label>
                       <input
@@ -168,9 +179,12 @@ export default function BusinessProfilePage() {
                       </div>
                     </div>
 
-                    <button className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all active:scale-95">
+                    <Link
+                      to="/langganan"
+                      className="w-full py-4 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center"
+                    >
                       Upgrade Paket
-                    </button>
+                    </Link>
                   </div>
                 </div>
 
