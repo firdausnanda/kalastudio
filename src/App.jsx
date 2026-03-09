@@ -6,6 +6,7 @@ import PartnershipPage from './pages/PartnershipPage';
 import PricingPage from './pages/PricingPage';
 import BlogPage from './pages/BlogPage';
 import PanduanPage from './pages/PanduanPage';
+import TermsPage from './pages/TermsPage';
 import NProgressLoader from './components/NProgressLoader';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/harga" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/panduan" element={<PanduanPage />} />
+        <Route path="/syarat-ketentuan" element={<TermsPage />} />
       </Routes>
     </Router>
   );
