@@ -5,7 +5,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-6">
-              <img src="/img/logo.png" alt="ChatKas Logo" className="h-8 rounded-lg" />
+              <img src="/img/logo.png" alt="KalaStudio Logo" className="h-8 rounded-lg dark:hidden" />
+              <img src="/img/logo_dark.png" alt="KalaStudio Logo" className="h-8 rounded-lg hidden dark:block" />
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed transition-colors">
               Solusi pembukuan termudah berbasis WhatsApp AI untuk digitalisasi UMKM di seluruh Indonesia.
