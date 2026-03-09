@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TransactionPage from './pages/TransactionPage';
 import AddTransactionPage from './pages/AddTransactionPage';
+import ReportPage from './pages/ReportPage';
 import FeaturesPage from './pages/FeaturesPage';
 import PartnershipPage from './pages/PartnershipPage';
 import PricingPage from './pages/PricingPage';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transaksi" element={<TransactionPage />} />
         <Route path="/transaksi/tambah" element={<AddTransactionPage />} />
+        <Route path="/laporan" element={<ReportPage />} />
         <Route path="/fitur" element={<FeaturesPage />} />
         <Route path="/partnership" element={<PartnershipPage />} />
         <Route path="/harga" element={<PricingPage />} />
