@@ -28,7 +28,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-400 transition-colors">
               <li><a className="hover:text-primary transition-colors" href="#">Tentang Kami</a></li>
               <li><a className="hover:text-primary transition-colors" href="#">Karier</a></li>
-              <li><a className="hover:text-primary transition-colors" href="#">Blog</a></li>
+              <li><Link className="hover:text-primary transition-colors" to="/blog">Blog</Link></li>
               <li><a className="hover:text-primary transition-colors" href="#">Kontak</a></li>
             </ul>
           </div>
@@ -63,7 +63,7 @@ export default function Footer() {
           <p className="text-xs text-slate-400 dark:text-slate-500 transition-colors">© 2026 KalaStudio. All rights reserved.</p>
           <div className="flex gap-6 text-xs text-slate-400 dark:text-slate-500 transition-colors">
             <Link className="hover:text-secondary dark:hover:text-primary" to="/syarat-ketentuan">Syarat &amp; Ketentuan</Link>
-            <a className="hover:text-secondary dark:hover:text-primary" href="#">Kebijakan Privasi</a>
+            <Link className="hover:text-secondary dark:hover:text-primary" to="/kebijakan-privasi">Kebijakan Privasi</Link>
           </div>
         </div>
       </div>
