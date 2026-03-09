@@ -108,7 +108,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                   <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
                     <p className="font-black text-slate-900 dark:text-white mb-1">Kala Studio</p>
                     <div className="flex items-center">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase tracking-wider">Business Plan</span>
+                      <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
                     </div>
                     <p className="text-sm text-slate-500 truncate lowercase mt-2">contact@kalastudio.com</p>
                   </div>

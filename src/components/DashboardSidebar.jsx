@@ -1,4 +1,7 @@
+import { Link, useLocation } from 'react-router-dom';
+
 export default function DashboardSidebar({ isSidebarOpen }) {
+  const location = useLocation();
   return (
     <aside
       className={`
@@ -13,20 +16,25 @@ export default function DashboardSidebar({ isSidebarOpen }) {
       <div className="w-64">
         <div className="p-6 space-y-2">
           {[
-            { name: 'Ringkasan', icon: 'grid_view', active: true },
-            { name: 'Transaksi', icon: 'receipt_long' },
-            { name: 'Laporan AI', icon: 'auto_awesome' },
-            { name: 'Pelanggan', icon: 'group' },
-            { name: 'Pengaturan', icon: 'settings' },
-          ].map((item, i) => (
-            <button
-              key={i}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all ${item.active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary'}`}
-            >
-              <span className="material-symbols-outlined">{item.icon}</span>
-              {item.name}
-            </button>
-          ))}
+            { name: 'Ringkasan', icon: 'grid_view', to: '/dashboard' },
+            { name: 'Transaksi', icon: 'receipt_long', to: '/transaksi' },
+            { name: 'Laporan AI', icon: 'auto_awesome', to: '/laporan' },
+            { name: 'Integrasi', icon: 'hub', to: '/integrasi' },
+            { name: 'Pelanggan', icon: 'group', to: '/pelanggan' },
+            { name: 'Pengaturan', icon: 'settings', to: '/pengaturan' },
+          ].map((item, i) => {
+            const isActive = location.pathname === item.to;
+            return (
+              <Link
+                key={i}
+                to={item.to}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary'}`}
+              >
+                <span className="material-symbols-outlined">{item.icon}</span>
+                {item.name}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="absolute bottom-8 left-6 right-6 w-52">

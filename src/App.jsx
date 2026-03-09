@@ -3,6 +3,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import TransactionPage from './pages/TransactionPage';
+import AddTransactionPage from './pages/AddTransactionPage';
 import FeaturesPage from './pages/FeaturesPage';
 import PartnershipPage from './pages/PartnershipPage';
 import PricingPage from './pages/PricingPage';
@@ -23,6 +25,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/transaksi" element={<TransactionPage />} />
+        <Route path="/transaksi/tambah" element={<AddTransactionPage />} />
         <Route path="/fitur" element={<FeaturesPage />} />
         <Route path="/partnership" element={<PartnershipPage />} />
         <Route path="/harga" element={<PricingPage />} />
