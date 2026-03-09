@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Select from 'react-select';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import { id } from 'date-fns/locale';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import DashboardFooter from '../components/DashboardFooter';
+
+registerLocale('id', id);
 
 export default function AddTransactionPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [transactionType, setTransactionType] = useState('out'); // 'in' or 'out'
   const [formData, setFormData] = useState({
     amount: '',
-    date: new Date().toISOString().split('T')[0],
+    date: new Date(),
     note: '',
   });
 
@@ -72,6 +77,18 @@ export default function AddTransactionPage() {
     navigate('/transaksi');
   };
 
+  const formatRupiah = (value) => {
+    if (!value) return '';
+    return new Intl.NumberFormat('id-ID').format(value);
+  };
+
+  const handleAmountChange = (e) => {
+    const rawValue = e.target.value.replace(/\./g, '');
+    if (!isNaN(rawValue) || rawValue === '') {
+      setFormData({ ...formData, amount: rawValue });
+    }
+  };
+
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col font-display transition-colors duration-300">
       <DashboardHeader isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
@@ -128,12 +145,13 @@ export default function AddTransactionPage() {
                   <div className="relative group">
                     <span className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-slate-300 group-focus-within:text-primary transition-colors">Rp</span>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       required
                       placeholder="0"
                       className="w-full pl-20 pr-8 py-6 bg-slate-50 dark:bg-slate-800 border-none rounded-[24px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-3xl font-black dark:text-white placeholder:text-slate-200 dark:placeholder:text-slate-700"
-                      value={formData.amount}
-                      onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                      value={formatRupiah(formData.amount)}
+                      onChange={handleAmountChange}
                     />
                   </div>
                 </div>
@@ -142,13 +160,18 @@ export default function AddTransactionPage() {
                   {/* Date Input */}
                   <div>
                     <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Tanggal</label>
-                    <input
-                      type="date"
-                      required
-                      className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
-                      value={formData.date}
-                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    />
+                    <div className="relative custom-datepicker">
+                      <DatePicker
+                        selected={formData.date}
+                        onChange={(date) => setFormData({ ...formData, date })}
+                        dateFormat="dd MMMM yyyy"
+                        locale="id"
+                        className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
+                        popperPlacement="bottom-end"
+                        calendarClassName="premium-calendar"
+                      />
+                      <span className="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">calendar_today</span>
+                    </div>
                   </div>
                 </div>
 

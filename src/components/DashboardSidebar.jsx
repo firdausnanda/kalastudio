@@ -20,8 +20,6 @@ export default function DashboardSidebar({ isSidebarOpen }) {
             { name: 'Transaksi', icon: 'receipt_long', to: '/transaksi' },
             { name: 'Laporan AI', icon: 'auto_awesome', to: '/laporan' },
             { name: 'Integrasi', icon: 'hub', to: '/integrasi' },
-            { name: 'Pelanggan', icon: 'group', to: '/pelanggan' },
-            { name: 'Pengaturan', icon: 'settings', to: '/pengaturan' },
           ].map((item, i) => {
             const isActive = location.pathname === item.to;
             return (
