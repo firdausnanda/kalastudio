@@ -1,5 +1,6 @@
+'use client';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import nprogress from 'nprogress';
 import 'nprogress/nprogress.css';
 
@@ -12,7 +13,7 @@ nprogress.configure({
 });
 
 export default function NProgressLoader() {
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Jalankan progress bar setiap kali lokasi (url) berubah
@@ -27,7 +28,7 @@ export default function NProgressLoader() {
       clearTimeout(timer);
       nprogress.done();
     };
-  }, [location]);
+  }, [pathname]);
 
   return null;
 }

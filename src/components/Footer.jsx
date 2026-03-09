@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+'use client';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -17,7 +18,7 @@ export default function Footer() {
           <div>
             <h5 className="text-secondary dark:text-white font-bold mb-6 transition-colors">Produk</h5>
             <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-400 transition-colors">
-              <li><Link className="hover:text-primary transition-colors" to="/fitur">Fitur</Link></li>
+              <li><Link className="hover:text-primary transition-colors" href="/fitur">Fitur</Link></li>
               <li><a className="hover:text-primary transition-colors" href="#">Laporan AI</a></li>
               <li><a className="hover:text-primary transition-colors" href="#">Integrasi WA</a></li>
               <li><a className="hover:text-primary transition-colors" href="#">Update Terbaru</a></li>
@@ -26,10 +27,10 @@ export default function Footer() {
           <div>
             <h5 className="text-secondary dark:text-white font-bold mb-6 transition-colors">Perusahaan</h5>
             <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-400 transition-colors">
-              <li><Link className="hover:text-primary transition-colors" to="/tentang-kami">Tentang Kami</Link></li>
+              <li><Link className="hover:text-primary transition-colors" href="/tentang-kami">Tentang Kami</Link></li>
               <li><a className="hover:text-primary transition-colors" href="#">Karier</a></li>
-              <li><Link className="hover:text-primary transition-colors" to="/blog">Blog</Link></li>
-              <li><Link className="hover:text-primary transition-colors" to="/kontak">Kontak</Link></li>
+              <li><Link className="hover:text-primary transition-colors" href="/blog">Blog</Link></li>
+              <li><Link className="hover:text-primary transition-colors" href="/kontak">Kontak</Link></li>
             </ul>
           </div>
           <div>
@@ -62,8 +63,8 @@ export default function Footer() {
         <div className="border-t border-slate-50 dark:border-slate-800/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 transition-colors">
           <p className="text-xs text-slate-400 dark:text-slate-500 transition-colors">© 2026 KalaStudio. All rights reserved.</p>
           <div className="flex gap-6 text-xs text-slate-400 dark:text-slate-500 transition-colors">
-            <Link className="hover:text-secondary dark:hover:text-primary" to="/syarat-ketentuan">Syarat &amp; Ketentuan</Link>
-            <Link className="hover:text-secondary dark:hover:text-primary" to="/kebijakan-privasi">Kebijakan Privasi</Link>
+            <Link className="hover:text-secondary dark:hover:text-primary" href="/syarat-ketentuan">Syarat &amp; Ketentuan</Link>
+            <Link className="hover:text-secondary dark:hover:text-primary" href="/kebijakan-privasi">Kebijakan Privasi</Link>
           </div>
         </div>
       </div>

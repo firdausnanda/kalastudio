@@ -1,10 +1,13 @@
+'use client';
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { logoutAction } from '@/app/actions/auth';
 
 export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem('theme') === 'dark') {
@@ -28,11 +31,16 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
     }
   };
 
-  const handleLogout = () => {
-    // Mockup logout: just redirect to home
-    sessionStorage.clear();
-    localStorage.removeItem('user');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logoutAction();
+      sessionStorage.clear();
+      localStorage.removeItem('user');
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
@@ -50,7 +58,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
             </span>
           </button>
 
-          <Link to="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <img src={isDarkMode ? "/img/logo_dark.png" : "/img/logo.png"} alt="KalaStudio Logo" className="h-8 rounded-lg" />
           </Link>
         </div>
@@ -123,7 +131,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                   </div>
                   <div className="p-2">
                     <Link
-                      to="/profil"
+                      href="/profil"
                       onClick={() => setIsProfileOpen(false)}
                       className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
                     >
@@ -131,7 +139,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                       Profil Bisnis
                     </Link>
                     <Link
-                      to="/langganan"
+                      href="/langganan"
                       onClick={() => setIsProfileOpen(false)}
                       className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
                     >

@@ -1,0 +1,33 @@
+import { mysqlTable, varchar, int, timestamp, text, float } from 'drizzle-orm/mysql-core';
+
+// Roles Table
+export const roles = mysqlTable('roles', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  name: varchar('name', { length: 50 }).notNull().unique(), // e.g., 'ADMIN', 'USER'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Example Users Table
+export const users = mysqlTable('users', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  username: varchar('username', { length: 50 }).unique(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password: varchar('password', { length: 255 }),
+  googleId: varchar('google_id', { length: 255 }).unique(),
+  avatar: text('avatar'),
+  roleId: varchar('role_id', { length: 36 }).references(() => roles.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Example Transactions Table
+export const transactions = mysqlTable('transactions', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 36 }).notNull(),
+  type: varchar('type', { length: 50 }).notNull(), // 'income', 'expense'
+  amount: float('amount').notNull(),
+  category: varchar('category', { length: 100 }),
+  note: text('note'),
+  date: timestamp('date').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

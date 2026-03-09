@@ -1,3 +1,4 @@
+"use client";
 export default function Features() {
   return (
     <section className="py-24 bg-white dark:bg-slate-900 transition-colors duration-300">

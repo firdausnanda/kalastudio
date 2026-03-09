@@ -1,3 +1,4 @@
+"use client";
 export default function DetailedFeatures() {
   return (
     <section className="py-32 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors duration-300">

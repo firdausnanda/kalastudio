@@ -1,5 +1,6 @@
+'use client';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export default function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -40,7 +41,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 dark:bg-slate-900/95 dark:border-slate-800 transition-colors">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link to="/" onClick={() => setIsMenuOpen(false)}>
+          <Link href="/" onClick={() => setIsMenuOpen(false)}>
             <img src={isDarkMode ? "/img/logo_dark.png" : "/img/logo.png"} alt="ChatKas Logo" className="h-10 rounded-xl" />
           </Link>
         </div>
@@ -51,7 +52,7 @@ export default function Header() {
             <Link
               key={link.to}
               className="text-sm font-semibold text-secondary hover:text-primary transition-colors dark:text-slate-200 dark:hover:text-primary"
-              to={link.to}
+              href={link.to}
             >
               {link.name}
             </Link>
@@ -69,11 +70,11 @@ export default function Header() {
             </span>
           </button>
 
-          <Link className="text-sm font-bold text-secondary px-4 py-2 hover:bg-slate-50 rounded-lg transition-all dark:text-slate-200 dark:hover:bg-slate-800 hidden sm:block" to="/login">
+          <Link className="text-sm font-bold text-secondary px-4 py-2 hover:bg-slate-50 rounded-lg transition-all dark:text-slate-200 dark:hover:bg-slate-800 hidden sm:block" href="/login">
             Masuk
           </Link>
 
-          <Link className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] hidden sm:block" to="/register">
+          <Link className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] hidden sm:block" href="/register">
             Coba Gratis
           </Link>
 
@@ -113,7 +114,7 @@ export default function Header() {
                 key={link.to}
                 onClick={() => setIsMenuOpen(false)}
                 className="text-lg font-bold text-secondary dark:text-slate-200 hover:text-primary dark:hover:text-primary transition-colors p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between group"
-                to={link.to}
+                href={link.to}
               >
                 {link.name}
                 <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
@@ -123,13 +124,13 @@ export default function Header() {
             <Link
               onClick={() => setIsMenuOpen(false)}
               className="text-lg font-bold text-secondary dark:text-slate-200 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between group"
-              to="/login"
+              href="/login"
             >
               Masuk
               <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">login</span>
             </Link>
             <div className="px-4 pb-4">
-              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="w-full bg-primary text-white py-5 rounded-[20px] font-black text-lg shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] mt-4 flex items-center justify-center">
+              <Link href="/register" onClick={() => setIsMenuOpen(false)} className="w-full bg-primary text-white py-5 rounded-[20px] font-black text-lg shadow-xl shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] mt-4 flex items-center justify-center">
                 Coba Gratis Sekarang
               </Link>
             </div>

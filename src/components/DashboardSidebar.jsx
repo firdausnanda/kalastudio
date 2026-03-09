@@ -1,7 +1,9 @@
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function DashboardSidebar({ isSidebarOpen }) {
-  const location = useLocation();
+  const pathname = usePathname();
   return (
     <aside
       className={`
@@ -21,11 +23,11 @@ export default function DashboardSidebar({ isSidebarOpen }) {
             { name: 'Laporan AI', icon: 'auto_awesome', to: '/laporan' },
             { name: 'Integrasi', icon: 'hub', to: '/integrasi' },
           ].map((item, i) => {
-            const isActive = location.pathname === item.to;
+            const isActive = pathname === item.to;
             return (
               <Link
                 key={i}
-                to={item.to}
+                href={item.to}
                 className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary'}`}
               >
                 <span className="material-symbols-outlined">{item.icon}</span>

@@ -1,3 +1,4 @@
+"use client";
 export default function BottomCTA() {
   return (
     <section className="py-24 bg-secondary dark:bg-slate-950 overflow-hidden relative transition-colors duration-300">
