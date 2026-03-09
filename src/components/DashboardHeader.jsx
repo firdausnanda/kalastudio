@@ -113,14 +113,22 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                     <p className="text-sm text-slate-500 truncate lowercase mt-2">contact@kalastudio.com</p>
                   </div>
                   <div className="p-2">
-                    <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold">
+                    <Link
+                      to="/profil"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
+                    >
                       <span className="material-symbols-outlined text-xl">person</span>
                       Profil Bisnis
-                    </button>
-                    <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold">
+                    </Link>
+                    <Link
+                      to="/profil"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-bold"
+                    >
                       <span className="material-symbols-outlined text-xl">payments</span>
                       Langganan
-                    </button>
+                    </Link>
                     <div className="h-px bg-slate-100 dark:bg-slate-800 my-2 mx-2"></div>
                     <button
                       onClick={handleLogout}
