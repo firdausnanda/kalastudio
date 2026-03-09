@@ -10,6 +10,7 @@ import PanduanPage from './pages/PanduanPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 import NProgressLoader from './components/NProgressLoader';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/syarat-ketentuan" element={<TermsPage />} />
         <Route path="/kebijakan-privasi" element={<PrivacyPage />} />
         <Route path="/tentang-kami" element={<AboutPage />} />
+        <Route path="/kontak" element={<ContactPage />} />
       </Routes>
     </Router>
   );

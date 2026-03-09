@@ -29,7 +29,7 @@ export default function Footer() {
               <li><Link className="hover:text-primary transition-colors" to="/tentang-kami">Tentang Kami</Link></li>
               <li><a className="hover:text-primary transition-colors" href="#">Karier</a></li>
               <li><Link className="hover:text-primary transition-colors" to="/blog">Blog</Link></li>
-              <li><a className="hover:text-primary transition-colors" href="#">Kontak</a></li>
+              <li><Link className="hover:text-primary transition-colors" to="/kontak">Kontak</Link></li>
             </ul>
           </div>
           <div>
