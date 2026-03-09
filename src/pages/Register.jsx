@@ -1,7 +1,14 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 export default function Register() {
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    navigate('/dashboard');
+  };
+
   return (
     <div className="bg-slate-50 dark:bg-[#1a202c] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
       <Header />
@@ -14,7 +21,7 @@ export default function Register() {
               <p className="text-slate-500 dark:text-slate-400 text-sm">Mulai kelola keuangan Anda lebih cerdas hari ini</p>
             </div>
 
-            <form action="#" className="space-y-5">
+            <form onSubmit={handleRegister} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Nama Lengkap</label>
                 <div className="relative">
