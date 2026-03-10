@@ -2,14 +2,27 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logoutAction } from '@/app/actions/auth';
+import { logoutAction, getSession } from '@/app/actions/auth';
 
 export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const session = await getSession();
+        if (session) {
+          setUser(session);
+        }
+      } catch (error) {
+        console.error('Failed to fetch session:', error);
+      }
+    };
+    fetchSession();
+
     if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
       setIsDarkMode(true);
@@ -109,9 +122,13 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className={`flex items-center gap-2 p-1.5 rounded-2xl border transition-all ${isProfileOpen ? 'bg-slate-50 dark:bg-slate-800 border-primary/20' : 'border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
-              <div className="w-8 h-8 md:w-9 md:h-9 bg-primary text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-primary/20 shrink-0">KS</div>
+              <div className="w-8 h-8 md:w-9 md:h-9 bg-primary text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-primary/20 shrink-0">
+                {user?.name ? user.name.substring(0, 2).toUpperCase() : 'KS'}
+              </div>
               <div className="hidden md:block text-left ml-1 mr-1">
-                <p className="text-xs font-black text-slate-900 dark:text-white leading-none text-nowrap mb-1">Kala Studio</p>
+                <p className="text-xs font-black text-slate-900 dark:text-white leading-none text-nowrap mb-1">
+                  {user?.name || 'Kala Studio'}
+                </p>
                 <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
               </div>
               <span className="hidden md:block material-symbols-outlined text-slate-400">expand_more</span>
@@ -123,11 +140,15 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                 <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)}></div>
                 <div className="absolute right-0 mt-4 w-64 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-20">
                   <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <p className="font-black text-slate-900 dark:text-white mb-1">Kala Studio</p>
+                    <p className="font-black text-slate-900 dark:text-white mb-1">
+                      {user?.name || 'Kala Studio'}
+                    </p>
                     <div className="flex items-center">
                       <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
                     </div>
-                    <p className="text-sm text-slate-500 truncate lowercase mt-2">contact@kalastudio.com</p>
+                    <p className="text-sm text-slate-500 truncate lowercase mt-2">
+                      {user?.email || 'contact@kalastudio.com'}
+                    </p>
                   </div>
                   <div className="p-2">
                     <Link
