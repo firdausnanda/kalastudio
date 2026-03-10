@@ -22,11 +22,11 @@ const unauthenticatedRoutes = [
   '/register'
 ];
 
-export async function proxy(request) {
+export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Check if the current route is protected or unauthenticated-only
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
   const isUnauthenticatedRoute = unauthenticatedRoutes.some(route => pathname === route);
 
   // If it's a public route and not explicitly unauthenticated-only, just proceed
