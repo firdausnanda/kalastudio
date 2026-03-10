@@ -3,12 +3,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
+import Spinner from '@/components/Spinner';
 import { registerAction } from '@/app/actions/auth';
 
 export default function Register() {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -80,12 +82,18 @@ export default function Register() {
                   <input
                     className="w-full pl-10 pr-12 py-3 bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none dark:text-slate-200 dark:placeholder-slate-500"
                     placeholder="••••••••"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     required
                   />
-                  <button className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-300 hover:scale-110 active:scale-95" type="button">
-                    <span className="material-symbols-outlined text-xl">visibility</span>
+                  <button
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-all duration-300 hover:scale-110 active:scale-95"
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <span className="material-symbols-outlined text-xl">
+                      {showPassword ? 'visibility_off' : 'visibility'}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -107,8 +115,17 @@ export default function Register() {
                 type="submit"
                 disabled={isLoading}
               >
-                {isLoading ? 'Memproses...' : 'Daftar Sekarang'}
-                {!isLoading && <span className="material-symbols-outlined text-xl transition-transform duration-300 group-hover:translate-x-1.5">arrow_forward</span>}
+                {isLoading ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span>Memproses...</span>
+                  </>
+                ) : (
+                  <>
+                    Daftar Sekarang
+                    <span className="material-symbols-outlined text-xl transition-transform duration-300 group-hover:translate-x-1.5">arrow_forward</span>
+                  </>
+                )}
               </button>
             </form>
 
