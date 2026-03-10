@@ -138,9 +138,9 @@ export default function Register() {
               </div>
             </div>
 
-            <button
+            <a
+              href="/api/auth/google?from=register"
               className="w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-500 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]"
-              type="button"
             >
               <img
                 alt="Google Logo"
@@ -148,7 +148,7 @@ export default function Register() {
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
               />
               Daftar dengan Google
-            </button>
+            </a>
           </div>
 
           <p className="mt-8 text-center text-slate-600 dark:text-slate-400 text-sm">
