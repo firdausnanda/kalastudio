@@ -21,7 +21,6 @@ export default function Footer() {
               <li><Link className="hover:text-primary transition-colors" href="/fitur">Fitur</Link></li>
               <li><Link className="hover:text-primary transition-colors" href="/laporan-ai">Laporan AI</Link></li>
               <li><Link className="hover:text-primary transition-colors" href="/integrasi-wa">Integrasi WA</Link></li>
-              <li><a className="hover:text-primary transition-colors" href="#">Update Terbaru</a></li>
             </ul>
           </div>
           <div>
