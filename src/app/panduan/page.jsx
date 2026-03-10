@@ -1,14 +1,39 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BottomCTA from '@/components/BottomCTA';
 import Link from 'next/link';
 
 export default function PanduanPage() {
+  const [openFaq, setOpenFaq] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const faqs = [
+    {
+      q: "Apa itu Kala Studio AI dan bagaimana cara kerjanya?",
+      a: "Kala Studio AI adalah asisten keuangan berbasis kecerdasan buatan yang dirancang khusus untuk membantu UMKM mencatat transaksi, mengelola keuangan, dan mendapatkan wawasan bisnis secara otomatis melalui WhatsApp."
+    },
+    {
+      q: "Apakah saya perlu mengunduh aplikasi tambahan?",
+      a: "Tidak. Kala Studio AI dirancang untuk beroperasi sepenuhnya di dalam platform WhatsApp. Anda dapat mengakses semua fitur langsung melalui chat dengan bot kami."
+    },
+    {
+      q: "Apakah KalaStudio mendukung pencatatan dalam mata uang asing?",
+      a: "Saat ini, sistem kami dioptimalkan untuk penggunaan mata uang Rupiah (IDR). Pembaruan selanjutnya akan mencakup dukungan multi-mata uang."
+    },
+    {
+      q: "Apakah data keuangan saya aman?",
+      a: "Ya, keamanan data adalah prioritas utama kami. Kami menggunakan enkripsi end-to-end dan protokol keamanan standar industri untuk melindungi informasi keuangan Anda."
+    },
+    {
+      q: "Apakah saya harus menggunakan format pengetikan khusus?",
+      a: "Tidak. AI KalaStudio dirancang untuk memahami bahasa alami. Anda dapat mengetik transaksi seperti biasa (misal: 'Beli pulsa 50rb') dan AI akan otomatis mengkategorikannya."
+    },
+  ];
 
   const categories = [
     {
@@ -102,15 +127,27 @@ export default function PanduanPage() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-black mb-10 text-center md:text-left dark:text-white">Pertanyaan Populer</h2>
             <div className="space-y-4">
-              {[
-                "Bagaimana cara AI KalaStudio mengenali suara saya?",
-                "Berapa banyak staf yang bisa saya tambahkan dalam satu akun?",
-                "Apakah KalaStudio mendukung pencatatan dalam mata uang asing?",
-                "Bagaimana cara ekspor laporan bulanan ke WhatsApp istri/partner?"
-              ].map((q, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between hover:border-primary/30 cursor-pointer transition-all group">
-                  <span className="font-bold text-slate-700 dark:text-slate-200">{q}</span>
-                  <span className="material-symbols-outlined text-primary group-hover:translate-x-1 transition-transform">chevron_right</span>
+              {faqs.map((faq, i) => (
+                <div
+                  key={i}
+                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden transition-all duration-300 shadow-sm"
+                >
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left"
+                  >
+                    <span className="font-bold text-slate-700 dark:text-slate-200 pr-8">{faq.q}</span>
+                    <span className={`material-symbols-outlined text-primary transition-transform duration-300 shrink-0 ${openFaq === i ? 'rotate-180' : ''}`}>
+                      expand_more
+                    </span>
+                  </button>
+                  <div
+                    className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openFaq === i ? 'max-h-96 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
+                  >
+                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-4">
+                      {faq.a}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
