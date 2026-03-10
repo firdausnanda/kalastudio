@@ -50,9 +50,13 @@ export default function PartnershipPage() {
                 Bergabunglah dengan visi kami untuk mendigitalisasi jutaan UMKM melalui teknologi yang paling dekat dengan mereka: WhatsApp.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 transition-all duration-300 hover:-translate-y-1">
+                <a href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }} className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/30 transition-all duration-300 hover:-translate-y-1">
                   Daftar Jadi Mitra
-                </button>
+                </a>
                 <button className="bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:border-primary">
                   Unduh Proposal
                 </button>
@@ -94,7 +98,7 @@ export default function PartnershipPage() {
         </section>
 
         {/* Contact Form Section Preview */}
-        <section className="py-24 bg-slate-50 dark:bg-slate-800/20 transition-colors duration-300">
+        <section id="contact" className="py-24 bg-slate-50 dark:bg-slate-800/20 transition-colors duration-300">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white dark:bg-slate-900 p-8 md:p-12 rounded-[32px] shadow-2xl border border-slate-100 dark:border-slate-800">
               <div className="text-center mb-12">

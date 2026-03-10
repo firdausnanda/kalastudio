@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BottomCTA from '@/components/BottomCTA';
+import Link from 'next/link';
 
 export default function PanduanPage() {
   useEffect(() => {
@@ -125,10 +126,10 @@ export default function PanduanPage() {
               Tim dukungan kami siap membantu Anda 24/7 melalui WhatsApp atau Email.
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10">
-              <button className="bg-white text-primary px-10 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">
+              <Link href="/kontak" className="bg-white text-primary px-10 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">
                 <span className="material-symbols-outlined">chat</span>
                 Hubungi Support
-              </button>
+              </Link>
             </div>
           </div>
         </section>
