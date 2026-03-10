@@ -19,7 +19,7 @@ export default function Footer() {
             <h5 className="text-secondary dark:text-white font-bold mb-6 transition-colors">Produk</h5>
             <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-400 transition-colors">
               <li><Link className="hover:text-primary transition-colors" href="/fitur">Fitur</Link></li>
-              <li><a className="hover:text-primary transition-colors" href="#">Laporan AI</a></li>
+              <li><Link className="hover:text-primary transition-colors" href="/laporan-ai">Laporan AI</Link></li>
               <li><Link className="hover:text-primary transition-colors" href="/integrasi-wa">Integrasi WA</Link></li>
               <li><a className="hover:text-primary transition-colors" href="#">Update Terbaru</a></li>
             </ul>
