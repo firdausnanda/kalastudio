@@ -147,7 +147,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                       <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
                     </div>
                     <p className="text-sm text-slate-500 truncate lowercase mt-2">
-                      {user?.email || 'contact@kalastudio.com'}
+                      {user?.email || 'team@kalastudioai.com'}
                     </p>
                   </div>
                   <div className="p-2">

@@ -85,7 +85,7 @@ export default function PrivacyPage() {
               Jika Anda memiliki pertanyaan tentang Kebijakan Privasi kami atau cara kami menangani data Anda, silakan hubungi kami di:
             </p>
             <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
-              <p className="text-slate-700 dark:text-slate-300 font-medium">Email: <a href="mailto:contact@kalastudio.com" className="text-primary hover:underline">contact@kalastudio.com</a></p>
+              <p className="text-slate-700 dark:text-slate-300 font-medium">Email: <a href="mailto:team@kalastudioai.com" className="text-primary hover:underline">team@kalastudioai.com</a></p>
               <p className="text-slate-700 dark:text-slate-300 font-medium mt-2">WhatsApp: <a href="https://wa.me/6281217122497" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+62 812 1712 2497</a></p>
             </div>
           </div>

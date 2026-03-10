@@ -18,7 +18,6 @@ export default function ContactPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log('Form submitted:', formState);
     alert('Terima kasih! Pesan Anda telah terkirim.');
     setFormState({ name: '', email: '', subject: '', message: '' });
   };
@@ -34,8 +33,8 @@ export default function ContactPage() {
     {
       icon: 'mail',
       title: 'Email Kami',
-      detail: 'contact@kalastudio.com',
-      link: 'mailto:contact@kalastudio.com',
+      detail: 'team@kalastudioai.com',
+      link: 'mailto:team@kalastudioai.com',
       color: 'bg-primary/10 text-primary'
     },
     {

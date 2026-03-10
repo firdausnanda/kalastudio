@@ -11,7 +11,7 @@ export default function BusinessProfilePage() {
     businessName: 'Kala Studio',
     businessType: 'Agency Kreatif',
     ownerName: 'Firdaus Nanda',
-    email: 'contact@kalastudio.com',
+    email: 'team@kalastudioai.com',
     phone: '081234567890',
     address: 'Jl. Senopati No. 12, Jakarta Selatan',
   });

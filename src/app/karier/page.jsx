@@ -231,8 +231,8 @@ export default function CareerPage() {
               <p className="text-slate-600 dark:text-slate-400 mb-6">
                 Kami selalu mencari talenta hebat. Kirimkan CV Anda secara langsung dan beri tahu bagaimana Anda bisa membantu kami.
               </p>
-              <a href="mailto:careers@kalastudio.com" className="text-primary font-bold hover:underline">
-                careers@kalastudio.com
+              <a href="mailto:team@kalastudioai.com" className="text-primary font-bold hover:underline">
+                team@kalastudioai.com
               </a>
             </div>
           </div>
