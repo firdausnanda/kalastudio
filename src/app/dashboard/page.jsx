@@ -47,6 +47,12 @@ export default function Dashboard() {
     { value: 'all', label: 'Semua Waktu' },
   ];
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const customSelectStyles = {
     control: (base, state) => ({
       ...base,
@@ -58,7 +64,7 @@ export default function Dashboard() {
     }),
     container: (base) => ({
       ...base,
-      backgroundColor: (typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '#1e293b' : '#f8fafc',
+      backgroundColor: (isMounted && localStorage.getItem('theme') === 'dark') ? '#1e293b' : '#f8fafc',
       borderRadius: '0.75rem',
       padding: '2px 8px',
       transition: 'all 0.3s ease',
@@ -69,7 +75,7 @@ export default function Dashboard() {
     }),
     singleValue: (base) => ({
       ...base,
-      color: (typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '#e2e8f0' : '#475569',
+      color: (isMounted && localStorage.getItem('theme') === 'dark') ? '#e2e8f0' : '#475569',
       fontSize: '0.875rem',
       fontWeight: '700',
     }),
@@ -81,9 +87,9 @@ export default function Dashboard() {
     }),
     menu: (base) => ({
       ...base,
-      backgroundColor: (typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '#0f172a' : '#fff',
+      backgroundColor: (isMounted && localStorage.getItem('theme') === 'dark') ? '#0f172a' : '#fff',
       borderRadius: '1rem',
-      border: (typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '1px solid #1e293b' : '1px solid #f1f5f9',
+      border: (isMounted && localStorage.getItem('theme') === 'dark') ? '1px solid #1e293b' : '1px solid #f1f5f9',
       boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       overflow: 'hidden',
       zIndex: 50,
@@ -93,9 +99,9 @@ export default function Dashboard() {
       backgroundColor: isSelected
         ? '#9C413D'
         : isFocused
-          ? ((typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '#1e293b' : '#f8fafc')
+          ? ((isMounted && localStorage.getItem('theme') === 'dark') ? '#1e293b' : '#f8fafc')
           : 'transparent',
-      color: isSelected ? '#fff' : ((typeof window !== 'undefined' && localStorage.getItem('theme') === 'dark') ? '#94a3b8' : '#475569'),
+      color: isSelected ? '#fff' : ((isMounted && localStorage.getItem('theme') === 'dark') ? '#94a3b8' : '#475569'),
       fontSize: '0.875rem',
       fontWeight: '600',
       cursor: 'pointer',
@@ -175,13 +181,17 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-xl font-bold dark:text-white">Tren Keuangan</h3>
                   <div className="w-48">
-                    <Select
-                      defaultValue={timeRange}
-                      onChange={setTimeRange}
-                      options={timeOptions}
-                      styles={customSelectStyles}
-                      isSearchable={false}
-                    />
+                    {isMounted ? (
+                      <Select
+                        defaultValue={timeRange}
+                        onChange={setTimeRange}
+                        options={timeOptions}
+                        styles={customSelectStyles}
+                        isSearchable={false}
+                      />
+                    ) : (
+                      <div className="h-[38px] w-full bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse"></div>
+                    )}
                   </div>
                 </div>
 
@@ -272,7 +282,12 @@ export default function Dashboard() {
                 </div>
                 <div className="flex justify-center md:justify-end">
                   <div className="w-40 h-40 bg-white/20 backdrop-blur-md rounded-[32px] flex items-center justify-center">
-                    <span className="material-symbols-outlined text-7xl">mic</span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: '50px' }}
+                    >
+                      mic
+                    </span>
                   </div>
                 </div>
               </div>
