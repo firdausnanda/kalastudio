@@ -127,12 +127,42 @@ export default function Dashboard() {
     { name: 'Min', value: 1500000 },
   ];
 
-  const recentTransactions = [
-    { id: 1, type: 'in', category: 'Penjualan Produk', amount: 'Rp 450.000', date: 'Hari ini, 14:20', via: 'WhatsApp AI' },
-    { id: 2, type: 'out', category: 'Pembayaran Supplier', amount: 'Rp 1.200.000', date: 'Kemarin, 09:15', via: 'Manual' },
-    { id: 3, type: 'in', category: 'Jasa Konsultasi', amount: 'Rp 300.000', date: '8 Mar, 16:40', via: 'WhatsApp AI' },
-    { id: 4, type: 'out', category: 'Listrik & Air', amount: 'Rp 550.000', date: '7 Mar, 11:10', via: 'WhatsApp AI' },
-  ];
+  const [transactions, setTransactions] = useState([]);
+  const [isLoadingRx, setIsLoadingRx] = useState(true);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await fetch('/api/dashboard/transaksi');
+        const data = await res.json();
+
+        if (data.success && data.data && data.data.data) {
+          // Struktur dari kalastudio-prod asumsikan data.data.data adalah array transaksi
+          // Kita map ke struktur yang dibutuhkan UI
+          const mapped = data.data.data.map(trx => ({
+            id: trx.id || Math.random().toString(),
+            type: trx.tipe === 'pengeluaran' ? 'out' : 'in',
+            category: trx.kategori || 'Transaksi',
+            amount: formatCurrency(trx.nominal || 0),
+            date: new Date(trx.tanggal * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+            via: trx.sumber || 'Sistem'
+          }));
+
+          setTransactions(mapped);
+        } else {
+          // Fallback dummy jika gagal parsing
+          setTransactions(recentTransactions);
+        }
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+        setTransactions(recentTransactions);
+      } finally {
+        setIsLoadingRx(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col font-display transition-colors duration-300">
@@ -248,22 +278,30 @@ export default function Dashboard() {
               <div className="bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-100 dark:border-slate-800">
                 <h3 className="text-xl font-bold dark:text-white mb-8">Aktivitas Baru</h3>
                 <div className="space-y-6">
-                  {recentTransactions.map((trx) => (
-                    <div key={trx.id} className="flex items-center gap-4 group">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                        <span className="material-symbols-outlined">{trx.type === 'in' ? 'add_circle' : 'remove_circle'}</span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{trx.category}</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{trx.date} • {trx.via}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-sm font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
-                          {trx.type === 'in' ? '+' : '-'}{trx.amount}
-                        </p>
-                      </div>
+                  {isLoadingRx ? (
+                    <div className="flex justify-center items-center py-8">
+                      <span className="material-symbols-outlined animate-spin text-primary text-3xl">refresh</span>
                     </div>
-                  ))}
+                  ) : transactions.length > 0 ? (
+                    transactions.map((trx) => (
+                      <div key={trx.id} className="flex items-center gap-4 group">
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                          <span className="material-symbols-outlined">{trx.type === 'in' ? 'add_circle' : 'remove_circle'}</span>
+                        </div>
+                        <div className="flex-grow">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{trx.category}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{trx.date} • {trx.via}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-sm font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
+                            {trx.type === 'in' ? '+' : '-'}{trx.amount.replace('Rp', '')}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-slate-400">Belum ada transaksi</div>
+                  )}
                 </div>
                 <button className="w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-bold text-primary hover:bg-primary/5 transition-colors">
                   Lihat Semua Transaksi

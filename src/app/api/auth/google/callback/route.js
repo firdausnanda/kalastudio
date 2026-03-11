@@ -4,6 +4,7 @@ import { db } from '@/db';
 import { users, roles, userDetails } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
@@ -58,13 +59,28 @@ export async function GET(request) {
     const byGoogleId = await db.select().from(users).where(eq(users.googleId, googleId)).limit(1);
     if (byGoogleId[0]) {
       user = byGoogleId[0];
+      // Jika user Google sebelumnya tidak memiliki password tersimpan, update dan berikan default hash password
+      if (!user.password) {
+        const hashedPassword = await bcrypt.hash('password123', 10);
+        await db.update(users).set({ password: hashedPassword }).where(eq(users.id, user.id));
+        user.password = hashedPassword;
+      }
     } else {
       const byEmail = await db.select().from(users).where(eq(users.email, email)).limit(1);
       if (byEmail[0]) {
         // User sudah ada via email/password → hubungkan akun Google-nya
         user = byEmail[0];
+        const updateData = { googleId, avatar: avatar || user.avatar };
+
+        // Cek jika password kosong set password default
+        if (!user.password) {
+          const hashedPassword = await bcrypt.hash('password123', 10);
+          updateData.password = hashedPassword;
+          user.password = hashedPassword;
+        }
+
         await db.update(users)
-          .set({ googleId, avatar: avatar || user.avatar })
+          .set(updateData)
           .where(eq(users.id, user.id));
       }
     }
@@ -78,6 +94,7 @@ export async function GET(request) {
         throw new Error('Role USER tidak ditemukan di database');
       }
 
+      const hashedPassword = await bcrypt.hash('password123', 10);
       const newUserId = crypto.randomUUID();
       await db.insert(users).values({
         id: newUserId,
@@ -86,10 +103,10 @@ export async function GET(request) {
         googleId,
         avatar,
         roleId: userRole.id,
-        // password: null — user Google tidak punya password
+        password: hashedPassword, // password default ketika register
       });
 
-      user = { id: newUserId, name, email, roleId: userRole.id, avatar };
+      user = { id: newUserId, name, email, roleId: userRole.id, avatar, password: hashedPassword };
     }
 
     // 5. Buat JWT session (sama seperti login email/password)
@@ -101,14 +118,14 @@ export async function GET(request) {
       avatar: user.avatar,
     };
 
-    const token = await new SignJWT(payload)
+    const internalToken = await new SignJWT(payload)
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('1d')
       .sign(JWT_SECRET);
 
     const cookieStore = await cookies();
-    cookieStore.set('kalastudio_session', token, {
+    cookieStore.set('kalastudio_session', internalToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -116,14 +133,13 @@ export async function GET(request) {
       maxAge: 60 * 60 * 24, // 1 hari
     });
 
-    // 6. Hit endpoint eksternal login & simpan token-nya
+    // 6. Hit endpoint eksternal login untuk mendapatkan token
     try {
       const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
       const externalLoginRes = await fetch(`${APP_SERVICE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ email: user.email, password: 'password123' }),
       });
@@ -135,6 +151,7 @@ export async function GET(request) {
         console.log('[Google External Token]', externalToken);
 
         if (externalToken) {
+          // Update database lokal dengan token eksternal agar bisa digunakan oleh /api/dashboard/transaksi
           await db.update(users).set({ token: externalToken }).where(eq(users.id, user.id));
         }
       } else {

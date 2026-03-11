@@ -26,6 +26,11 @@ const unauthenticatedRoutes = [
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
+  // Bypass API routes immediately
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
+
   // Check if the current route is protected or unauthenticated-only
   const isProtectedRoute = protectedRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
   const isUnauthenticatedRoute = unauthenticatedRoutes.some(route => pathname === route);
