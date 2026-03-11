@@ -16,8 +16,21 @@ export const users = mysqlTable('users', {
   password: varchar('password', { length: 255 }),
   googleId: varchar('google_id', { length: 255 }).unique(),
   avatar: text('avatar'),
+  token: text('token'),
   roleId: varchar('role_id', { length: 36 }).references(() => roles.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// User Details Table
+export const userDetails = mysqlTable('user_details', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 36 }).references(() => users.id).notNull().unique(),
+  phone: varchar('phone', { length: 50 }),
+  address: text('address'),
+  businessName: varchar('business_name', { length: 255 }),
+  businessType: varchar('business_type', { length: 150 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow().notNull(),
 });
 
 // Example Transactions Table

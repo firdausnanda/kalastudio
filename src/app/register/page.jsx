@@ -24,7 +24,11 @@ export default function Register() {
       setError(result.error);
       setIsLoading(false);
     } else if (result?.success) {
-      router.push('/dashboard');
+      if (result.profileComplete === false) {
+        router.push('/lengkapi-profil');
+      } else {
+        router.push('/dashboard');
+      }
       router.refresh();
     }
   };

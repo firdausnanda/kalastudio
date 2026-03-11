@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
 import { db } from '@/db';
-import { users } from '@/db/schema';
+import { users, userDetails } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { SignJWT, jwtVerify } from 'jose';
 
@@ -67,7 +67,40 @@ export async function loginAction(prevState, formData) {
       maxAge: remember ? 60 * 60 * 24 * 30 : 60 * 60 * 24, // 30 hari atau 1 hari
     });
 
-    return { success: true };
+    // Hit endpoint eksternal login & simpan token-nya
+    try {
+      const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
+      const externalLoginRes = await fetch(`${APP_SERVICE}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (externalLoginRes.ok) {
+        const externalData = await externalLoginRes.json();
+        console.log('[External Login Response]', JSON.stringify(externalData, null, 2));
+        const externalToken = externalData?.token || externalData?.data?.token || null;
+        console.log('[External Token]', externalToken);
+
+        if (externalToken) {
+          await db.update(users).set({ token: externalToken }).where(eq(users.email, email));
+        }
+      } else {
+        const errText = await externalLoginRes.text();
+        console.warn('[External Login Warning]', externalLoginRes.status, errText);
+      }
+    } catch (extErr) {
+      console.warn('[External Login Error]', extErr.message);
+    }
+
+    // Cek apakah profil bisnis sudah dilengkapi
+    const detailResult = await db.select().from(userDetails).where(eq(userDetails.userId, user.id)).limit(1);
+    const profileComplete = detailResult.length > 0;
+
+    return { success: true, profileComplete };
   } catch (error) {
     console.error('--- Login Action Error Start ---');
     console.error('Error Object:', error);
@@ -145,7 +178,8 @@ export async function registerAction(prevState, formData) {
       maxAge: 60 * 60 * 24,
     });
 
-    return { success: true };
+    // Akun baru → profil belum dilengkapi
+    return { success: true, profileComplete: false };
   } catch (error) {
     console.error('Register action error:', error);
     return { error: 'Terjadi kesalahan saat pendaftaran. Silakan coba lagi.' };

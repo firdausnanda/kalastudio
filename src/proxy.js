@@ -13,7 +13,8 @@ const protectedRoutes = [
   '/laporan',
   '/integrasi',
   '/profil',
-  '/langganan'
+  '/langganan',
+  '/lengkapi-profil'
 ];
 
 // Define routes that are only for unauthenticated users (like login/register)
@@ -22,7 +23,7 @@ const unauthenticatedRoutes = [
   '/register'
 ];
 
-export async function middleware(request) {
+export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // Check if the current route is protected or unauthenticated-only

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { SignJWT } from 'jose';
 import { db } from '@/db';
-import { users, roles } from '@/db/schema';
+import { users, roles, userDetails } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 
@@ -116,7 +116,41 @@ export async function GET(request) {
       maxAge: 60 * 60 * 24, // 1 hari
     });
 
-    return Response.redirect(`${APP_URL}/dashboard`);
+    // 6. Hit endpoint eksternal login & simpan token-nya
+    try {
+      const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
+      const externalLoginRes = await fetch(`${APP_SERVICE}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: user.email, password: 'password123' }),
+      });
+
+      if (externalLoginRes.ok) {
+        const externalData = await externalLoginRes.json();
+        console.log('[Google External Login Response]', JSON.stringify(externalData, null, 2));
+        const externalToken = externalData?.token || externalData?.data?.token || null;
+        console.log('[Google External Token]', externalToken);
+
+        if (externalToken) {
+          await db.update(users).set({ token: externalToken }).where(eq(users.id, user.id));
+        }
+      } else {
+        const errText = await externalLoginRes.text();
+        console.warn('[Google External Login Warning]', externalLoginRes.status, errText);
+      }
+    } catch (extErr) {
+      console.warn('[Google External Login Error]', extErr.message);
+    }
+
+    // Cek apakah profil bisnis sudah dilengkapi
+    const detailResult = await db.select().from(userDetails).where(eq(userDetails.userId, user.id)).limit(1);
+    const profileComplete = detailResult.length > 0;
+
+    const redirectPath = profileComplete ? '/dashboard' : '/lengkapi-profil';
+    return Response.redirect(`${APP_URL}${redirectPath}`);
 
   } catch (err) {
     console.error('Google OAuth callback error:', err);
