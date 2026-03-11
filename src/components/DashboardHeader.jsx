@@ -8,6 +8,7 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,6 +31,22 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
       document.documentElement.classList.remove('dark');
       setIsDarkMode(false);
     }
+
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch('/api/dashboard/user');
+        const json = await res.json();
+
+        console.log(json);
+
+        if (json.success && json.data) {
+          setUserData(json.data.data || json.data);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch user data:', error);
+      }
+    };
+    fetchUserData();
   }, []);
 
   const toggleDarkMode = () => {
@@ -109,13 +126,19 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
           </button>
 
           {/* AI Token Indicator */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 rounded-2xl group hover:bg-amber-500/20 transition-all" title="Sisa Token AI untuk pemrosesan WhatsApp">
+          <Link
+            href="/langganan"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 rounded-2xl group hover:bg-amber-500/20 transition-all cursor-pointer active:scale-95 shadow-sm hover:shadow-md"
+            title="Sisa Token AI untuk pemrosesan WhatsApp - Klik untuk isi ulang"
+          >
             <span className="material-symbols-outlined text-amber-500 text-[18px] group-hover:scale-110 transition-transform font-black">bolt</span>
             <div className="flex flex-col items-start leading-none gap-0.5">
               <span className="text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">AI Token</span>
-              <span className="text-[11px] font-black text-slate-900 dark:text-white">850 Sisa</span>
+              <span className="text-[11px] font-black text-slate-900 dark:text-white">
+                {userData?.token_balance !== undefined ? userData.token_balance : '...'} Sisa
+              </span>
             </div>
-          </div>
+          </Link>
 
           <div className="relative">
             <button
@@ -129,7 +152,9 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                 <p className="text-xs font-black text-slate-900 dark:text-white leading-none text-nowrap mb-1">
                   {user?.name || 'Kala Studio'}
                 </p>
-                <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
+                <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm truncate">
+                  {userData?.plan !== undefined ? userData.plan + ' Plan' : '... Plan'}
+                </p>
               </div>
               <span className="hidden md:block material-symbols-outlined text-slate-400">expand_more</span>
             </button>
@@ -144,7 +169,9 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
                       {user?.name || 'Kala Studio'}
                     </p>
                     <div className="flex items-center">
-                      <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">Business Plan</p>
+                      <p className="text-[9px] font-black bg-gradient-to-r from-primary to-amber-500 bg-clip-text text-transparent uppercase leading-none tracking-[0.2em] drop-shadow-sm">
+                        {userData?.plan !== undefined ? userData.plan : '...'} Plan
+                      </p>
                     </div>
                     <p className="text-sm text-slate-500 truncate lowercase mt-2">
                       {user?.email || 'team@kalastudioai.com'}

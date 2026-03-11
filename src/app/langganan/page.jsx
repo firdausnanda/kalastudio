@@ -23,7 +23,7 @@ export default function SubscriptionPage() {
 
   const plans = [
     {
-      name: 'Free Plan',
+      name: 'Trial Plan',
       price: 'Rp 0',
       period: '/selamanya',
       features: ['50 Transaksi/bulan', 'Laporan Dasar', '1 Integrasi WhatsApp', 'Support Email'],
@@ -33,7 +33,7 @@ export default function SubscriptionPage() {
     },
     {
       name: 'Starter',
-      price: 'Rp 49rb',
+      price: 'Rp 99rb',
       period: '/bulan',
       features: ['500 Transaksi/bulan', 'Laporan AI Mingguan', '3 Integrasi WhatsApp', 'Prioritas Support'],
       buttonText: 'Pilih Starter',
@@ -42,7 +42,7 @@ export default function SubscriptionPage() {
     },
     {
       name: 'Business',
-      price: 'Rp 149rb',
+      price: 'Rp 249rb',
       period: '/bulan',
       features: ['Transaksi Unlimited', 'Laporan AI Real-time', 'Integrasi Unlimited', 'Account Manager'],
       buttonText: 'Paket Aktif',
@@ -52,10 +52,10 @@ export default function SubscriptionPage() {
     },
     {
       name: 'Professional',
-      price: 'Rp 299rb',
+      price: 'Custom',
       period: '/bulan',
       features: ['Fitur Custom', 'Multi User Access', 'API Access', '24/7 VIP Support'],
-      buttonText: 'Pilih Pro',
+      buttonText: 'Hubungi Kami',
       isCurrent: false,
       color: 'bg-amber-500',
     },
