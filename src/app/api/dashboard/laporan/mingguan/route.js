@@ -48,7 +48,7 @@ export async function GET(request) {
 
     // 3. Fetch API Eksternal
     const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
-    const externalUrl = `${APP_SERVICE}/api/transaksi/${phone}`;
+    const externalUrl = `${APP_SERVICE}/api/laporan/${phone}/chart/mingguan`;
 
     const externalRes = await fetch(externalUrl, {
       method: 'GET',
@@ -60,17 +60,16 @@ export async function GET(request) {
 
     if (!externalRes.ok) {
       const errorText = await externalRes.text();
-      console.warn('Gagal fetch transaksi eksternal:', externalRes.status, errorText);
+      console.warn('Gagal fetch laporan mingguan eksternal:', externalRes.status, errorText);
       return NextResponse.json({ error: 'Gagal mengambil data dari server eksternal' }, { status: externalRes.status });
     }
 
     const externalData = await externalRes.json();
 
-    // Kembalikan data as-is untuk diproses di client
     return NextResponse.json({ success: true, data: externalData });
 
   } catch (error) {
-    console.error('API /dashboard/transaksi error:', error);
+    console.error('API /dashboard/laporan/mingguan error:', error);
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }

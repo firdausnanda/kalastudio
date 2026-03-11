@@ -33,7 +33,20 @@ export default function LengkapiProfilPage() {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let { name, value } = e.target;
+
+    if (name === 'phone') {
+      // Pastikan hanya angka
+      value = value.replace(/\D/g, '');
+      // Ganti awalan 0 dengan 62
+      if (value.startsWith('0')) {
+        value = '62' + value.substring(1);
+      } else if (value.startsWith('8')) {
+        value = '62' + value;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -240,7 +253,7 @@ export default function LengkapiProfilPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="08xxxxxxxxxx"
+                        placeholder="628xxxxxxxxxx"
                         required
                         className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all text-sm font-semibold text-slate-800 dark:text-white placeholder-slate-400"
                       />

@@ -111,15 +111,58 @@ export default function Dashboard() {
     }).format(value);
   };
 
-  const chartData = [
-    { name: 'Sen', pemasukan: 7000000, pengeluaran: 5000000 },
-    { name: 'Sel', pemasukan: 7500000, pengeluaran: 3000000 },
-    { name: 'Rab', pemasukan: 6000000, pengeluaran: 4000000 },
-    { name: 'Kam', pemasukan: 2300000, pengeluaran: 1000000 },
-    { name: 'Jum', pemasukan: 5000000, pengeluaran: 4000000 },
-    { name: 'Sab', pemasukan: 1000000, pengeluaran: 500000 },
-    { name: 'Min', pemasukan: 1500000, pengeluaran: 1000000 },
-  ];
+  const [chartData, setChartData] = useState([
+    { name: 'Sen', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Sel', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Rab', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Kam', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Jum', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Sab', pemasukan: 0, pengeluaran: 0 },
+    { name: 'Min', pemasukan: 0, pengeluaran: 0 },
+  ]);
+
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const res = await fetch('/api/dashboard/laporan/mingguan');
+        const data = await res.json();
+
+        if (data && data.success && data.data) {
+          const apiData = data.data.data || data.data;
+
+          if (Array.isArray(apiData)) {
+            // Asumsi API mengembalikan list harian, ubah struktur sesuai kebutuhan format Recharts
+            const mapped = apiData.map(d => {
+              // Extract nama hari yang singkat dari response jika ada
+              let name = d.hari || d.tanggal || d.name || 'Day';
+              if (typeof name === 'string' && name.length > 3) {
+                name = name.substring(0, 3);
+              }
+              return {
+                name,
+                pemasukan: d.pemasukan || d.total_pemasukan || 0,
+                pengeluaran: d.pengeluaran || d.total_pengeluaran || 0,
+              };
+            });
+
+            if (mapped.length > 0) {
+              const daysOrder = { 'Sen': 1, 'Sel': 2, 'Rab': 3, 'Kam': 4, 'Jum': 5, 'Sab': 6, 'Min': 7 };
+              mapped.sort((a, b) => {
+                const dayA = daysOrder[a.name] || 99;
+                const dayB = daysOrder[b.name] || 99;
+                return dayA - dayB;
+              });
+              setChartData(mapped);
+            }
+          }
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch chart data:', error);
+      }
+    };
+    fetchChartData();
+  }, []);
 
   const [transactions, setTransactions] = useState([]);
   const [isLoadingRx, setIsLoadingRx] = useState(true);
@@ -158,26 +201,23 @@ export default function Dashboard() {
         const res = await fetch('/api/dashboard/transaksi');
         const data = await res.json();
 
-        if (data.success && data.data && data.data.data) {
-          // Struktur dari kalastudio-prod asumsikan data.data.data adalah array transaksi
-          // Kita map ke struktur yang dibutuhkan UI
+        if (data && data.data && Array.isArray(data.data.data)) {
           const mapped = data.data.data.map(trx => ({
             id: trx.id || Math.random().toString(),
             type: trx.tipe === 'pengeluaran' ? 'out' : 'in',
-            category: trx.kategori || 'Transaksi',
-            amount: formatCurrency(trx.nominal || 0),
-            date: new Date(trx.tanggal * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
-            via: trx.sumber || 'Sistem'
+            category: trx.kategori || trx.deskripsi || 'Transaksi',
+            amount: formatCurrency(trx.total || 0),
+            date: new Date(trx.transaksi_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+            via: trx.sumber_input || 'Sistem'
           }));
 
           setTransactions(mapped);
         } else {
-          // Fallback dummy jika gagal parsing
-          setTransactions(recentTransactions);
+          setTransactions([]);
         }
       } catch (error) {
         console.error('Failed to fetch transactions:', error);
-        setTransactions(recentTransactions);
+        setTransactions([]);
       } finally {
         setIsLoadingRx(false);
       }
