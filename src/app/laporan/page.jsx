@@ -18,9 +18,11 @@ import DashboardFooter from '@/components/DashboardFooter';
 
 export default function ReportPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [reportPeriod, setReportPeriod] = useState({ value: 'maret', label: 'Maret 2026' });
+  const [reportPeriod, setReportPeriod] = useState({ value: '2026-03', label: 'Maret 2026' });
   const [summaryData, setSummaryData] = useState(null);
   const [isLoadingSummary, setIsLoadingSummary] = useState(true);
+  const [reportData, setReportData] = useState([]);
+  const [isLoadingChart, setIsLoadingChart] = useState(true);
   const [aiInsights, setAiInsights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,17 +41,11 @@ export default function ReportPage() {
   }, []);
 
   const periodOptions = [
-    { value: 'maret', label: 'Maret 2026' },
-    { value: 'februari', label: 'Februari 2026' },
-    { value: 'januari', label: 'Januari 2026' },
+    { value: '2026-03', label: 'Maret 2026' },
+    { value: '2026-02', label: 'Februari 2026' },
+    { value: '2026-01', label: 'Januari 2026' },
   ];
 
-  const reportData = [
-    { name: 'Minggu 1', masuk: 4500000, keluar: 2100000 },
-    { name: 'Minggu 2', masuk: 5200000, keluar: 3800000 },
-    { name: 'Minggu 3', masuk: 3900000, keluar: 1500000 },
-    { name: 'Minggu 4', masuk: 6100000, keluar: 4200000 },
-  ];
 
   const summaryStats = [
     { label: 'Total Pemasukan', value: summaryData?.total_pemasukan || 0, icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
@@ -109,6 +105,35 @@ export default function ReportPage() {
 
     fetchData();
   }, []);
+
+  // Effect terpisah untuk chart agar bisa refresh saat reportPeriod berubah
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        setIsLoadingChart(true);
+        const response = await fetch(`/api/dashboard/laporan/bulanan?bulan=${reportPeriod.value}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          // Map data agar sesuai dengan kunci yang digunakan di Recharts (masuk, keluar)
+          const mappedData = result.data.map(item => ({
+            name: `H-${item.name}`,
+            masuk: item.pemasukan || 0,
+            keluar: item.pengeluaran || 0
+          }));
+          setReportData(mappedData);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data chart:", error);
+      } finally {
+        setIsLoadingChart(false);
+      }
+    };
+
+    if (reportPeriod?.value) {
+      fetchChartData();
+    }
+  }, [reportPeriod]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -174,7 +199,7 @@ export default function ReportPage() {
               </div>
               <div className="w-56">
                 <Select
-                  instanceId="unique-select-id"
+                  instanceId="month-select"
                   defaultValue={reportPeriod}
                   onChange={setReportPeriod}
                   options={periodOptions}
@@ -219,7 +244,16 @@ export default function ReportPage() {
                   </div>
                 </div>
 
-                <div className="h-[350px] w-full">
+                <div className="h-[350px] w-full relative">
+                  {isLoadingChart && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-slate-900/50 z-10 backdrop-blur-sm rounded-xl">
+                      <div className="flex flex-col items-center gap-3">
+                        <span className="material-symbols-outlined animate-spin text-primary text-4xl">sync</span>
+                        <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Memuat Data...</p>
+                      </div>
+                    </div>
+                  )}
+
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={reportData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.5} />
@@ -227,7 +261,7 @@ export default function ReportPage() {
                         dataKey="name"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 700 }}
+                        tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
                         dy={15}
                       />
                       <YAxis hide domain={[0, 'dataMax + 1000000']} />
@@ -244,19 +278,20 @@ export default function ReportPage() {
                           boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'
                         }}
                         itemStyle={{ color: '#fff', padding: '2px 0' }}
+                        labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
                         formatter={(value) => formatCurrency(value)}
                       />
                       <Bar
                         dataKey="masuk"
                         fill="#22c55e"
                         radius={[6, 6, 0, 0]}
-                        barSize={32}
+                        barSize={reportData.length > 20 ? 8 : 16}
                       />
                       <Bar
                         dataKey="keluar"
                         fill="#ef4444"
                         radius={[6, 6, 0, 0]}
-                        barSize={32}
+                        barSize={reportData.length > 20 ? 8 : 16}
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -309,12 +344,12 @@ export default function ReportPage() {
                       )}
                     </div>
 
-                    <button
+                    {/* <button
                       disabled={isLoading}
                       className="w-full mt-8 py-4 bg-white text-primary rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                     >
                       {isLoading ? 'Menganalisis...' : 'Generate Laporan Full'}
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
