@@ -8,14 +8,15 @@ import DashboardFooter from '@/components/DashboardFooter';
 export default function BusinessProfilePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [formData, setFormData] = useState({
-    businessName: 'Kala Studio',
-    businessType: 'Agency Kreatif',
-    ownerName: 'Firdaus Nanda',
-    email: 'team@kalastudioai.com',
-    phone: '081234567890',
-    address: 'Jl. Senopati No. 12, Jakarta Selatan',
+    businessName: '',
+    businessType: '',
+    ownerName: '',
+    email: '',
+    phone: '',
+    address: '',
   });
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -29,16 +30,82 @@ export default function BusinessProfilePage() {
     };
     handleResize();
     window.addEventListener('resize', handleResize);
+
+    const fetchProfile = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch('/api/dashboard/user');
+        const json = await res.json();
+
+        console.log(json);
+
+
+        if (json.success && json.data) {
+          const user = json.data.data || json.data;
+          setFormData({
+            businessName: user.nama_toko || '',
+            businessType: user.bidang_usaha || '',
+            ownerName: user.nama_lengkap || user.nama_kontak || '',
+            email: user.email || '',
+            phone: user.wa_nomor || '',
+            address: user.alamat_toko || '',
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/dashboard/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nama_toko: formData.businessName,
+          bidang_usaha: formData.businessType,
+          nama_lengkap: formData.ownerName,
+          email: formData.email,
+          wa_nomor: formData.phone,
+          alamat_toko: formData.address,
+        }),
+      });
+
+      const json = await res.json();
+      if (res.ok) {
+        alert('Profil bisnis berhasil diperbarui!');
+        // Refresh data setelah simpan
+        if (json.data) {
+          const user = json.data.data || json.data;
+          setFormData({
+            businessName: user.nama_toko || '',
+            businessType: user.bidang_usaha || '',
+            ownerName: user.nama_lengkap || user.nama_kontak || '',
+            email: user.email || '',
+            phone: user.wa_nomor || '',
+            address: user.alamat_toko || '',
+          });
+        }
+      } else {
+        alert(`Gagal memperbarui profil: ${json.error || 'Terjadi kesalahan'}`);
+      }
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      alert('Terjadi kesalahan sistem saat menyimpan profil.');
+    } finally {
       setIsSaving(false);
-      alert('Profil bisnis berhasil diperbarui!');
-    }, 1500);
+    }
   };
 
   return (
@@ -67,7 +134,14 @@ export default function BusinessProfilePage() {
             <div className="grid lg:grid-cols-3 gap-10">
               {/* Profile Form */}
               <div className="lg:col-span-2 space-y-8">
-                <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-8">
+                <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-8 relative overflow-hidden">
+                  {isLoading && (
+                    <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-4">
+                      <span className="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+                      <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Memuat Data...</p>
+                    </div>
+                  )}
+
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="md:col-span-2">
                       <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Nama Pemilik Usaha</label>
@@ -76,6 +150,7 @@ export default function BusinessProfilePage() {
                         className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                         value={formData.ownerName}
                         onChange={(e) => setFormData({ ...formData, ownerName: e.target.value })}
+                        required
                       />
                     </div>
                     <div>
@@ -85,6 +160,7 @@ export default function BusinessProfilePage() {
                         className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                         value={formData.businessName}
                         onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                        required
                       />
                     </div>
                     <div>
@@ -94,6 +170,7 @@ export default function BusinessProfilePage() {
                         className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                         value={formData.businessType}
                         onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
+                        required
                       />
                     </div>
                   </div>
@@ -106,6 +183,7 @@ export default function BusinessProfilePage() {
                         className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
                       />
                     </div>
                     <div>
@@ -115,6 +193,7 @@ export default function BusinessProfilePage() {
                         className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        required
                       />
                     </div>
                   </div>
@@ -126,13 +205,14 @@ export default function BusinessProfilePage() {
                       className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-[20px] outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm font-bold dark:text-white"
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      required
                     ></textarea>
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      disabled={isSaving}
+                      disabled={isSaving || isLoading}
                       className="w-full md:w-auto px-10 py-5 bg-primary text-white rounded-[24px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/30 hover:-translate-y-1 active:scale-95 transition-all text-xs disabled:opacity-50"
                     >
                       {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}

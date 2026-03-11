@@ -141,7 +141,7 @@ export async function GET(request) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: user.email, password: 'password123' }),
+        body: JSON.stringify({ email: user.email, password: user.password }),
       });
 
       if (externalLoginRes.ok) {
