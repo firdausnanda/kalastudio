@@ -19,6 +19,10 @@ import DashboardFooter from '@/components/DashboardFooter';
 export default function ReportPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [reportPeriod, setReportPeriod] = useState({ value: 'maret', label: 'Maret 2026' });
+  const [summaryData, setSummaryData] = useState(null);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(true);
+  const [aiInsights, setAiInsights] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -48,15 +52,63 @@ export default function ReportPage() {
   ];
 
   const summaryStats = [
-    { label: 'Total Pemasukan', value: 19700000, icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Total Pengeluaran', value: 11600000, icon: 'trending_down', color: 'text-red-500', bg: 'bg-red-500/10' },
-    { label: 'Laba Bersih', value: 8100000, icon: 'account_balance', color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Total Pemasukan', value: summaryData?.total_pemasukan || 0, icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
+    { label: 'Total Pengeluaran', value: summaryData?.total_pengeluaran || 0, icon: 'trending_down', color: 'text-red-500', bg: 'bg-red-500/10' },
+    { label: 'Laba Bersih', value: summaryData?.laba_bersih || 0, icon: 'account_balance', color: 'text-primary', bg: 'bg-primary/10' },
   ];
 
-  const aiInsights = [
-    { title: 'Efisiensi Operasional', text: 'Pengeluaran Anda turun 15% dibandingkan minggu lalu. Pertahankan efisiensi ini.', type: 'positive' },
-    { title: 'Peluang Ekspansi', text: 'Tren pemasukan di akhir pekan sangat kuat. Pertimbangkan promo khusus Sabtu-Minggu.', type: 'neutral' },
-  ];
+  const toTitleCase = (str) => {
+    if (!str) return '';
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch Summary
+      try {
+        setIsLoadingSummary(true);
+        const res = await fetch('/api/dashboard/summary');
+        const json = await res.json();
+        if (json.success && json.data) {
+          setSummaryData(json.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch summary:', error);
+      } finally {
+        setIsLoadingSummary(false);
+      }
+
+      // Fetch Insights
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/dashboard/insight');
+        const result = await response.json();
+
+        if (result.success) {
+          const formattedInsights = [
+            ...(result.anomali || []).map(item => ({
+              title: item.tipe.replace(/_/g, ' '),
+              text: item.pesan,
+              type: 'negative'
+            })),
+            ...(result.insight || []).map(text => ({
+              title: 'Saran Strategis',
+              text: text,
+              type: 'positive'
+            }))
+          ];
+
+          setAiInsights(formattedInsights);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data insight:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -122,6 +174,7 @@ export default function ReportPage() {
               </div>
               <div className="w-56">
                 <Select
+                  instanceId="unique-select-id"
                   defaultValue={reportPeriod}
                   onChange={setReportPeriod}
                   options={periodOptions}
@@ -139,7 +192,11 @@ export default function ReportPage() {
                     <span className="material-symbols-outlined text-3xl">{stat.icon}</span>
                   </div>
                   <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-2">{stat.label}</p>
-                  <p className={`text-2xl font-black ${stat.label === 'Laba Bersih' ? 'text-primary' : 'text-slate-900 dark:text-white'}`}>{formatCurrency(stat.value)}</p>
+                  {isLoadingSummary ? (
+                    <div className="h-8 w-32 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-lg mt-1"></div>
+                  ) : (
+                    <p className={`text-2xl font-black ${stat.label === 'Laba Bersih' ? 'text-primary' : 'text-slate-900 dark:text-white'}`}>{formatCurrency(stat.value || 0)}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -209,24 +266,54 @@ export default function ReportPage() {
               {/* AI Insights Section */}
               <div className="space-y-6">
                 <div className="bg-primary rounded-[40px] p-8 text-white relative overflow-hidden shadow-2xl shadow-primary/20">
+                  {/* Dekorasi Background */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+
                   <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6">
-                      <span className="material-symbols-outlined">auto_awesome</span>
-                      <h4 className="text-lg font-black uppercase tracking-wider text-sm">AI Business Insights</h4>
+                      <span className={`material-symbols-outlined ${isLoading ? 'animate-spin' : 'animate-pulse'}`}>
+                        {isLoading ? 'sync' : 'auto_awesome'}
+                      </span>
+                      <h4 className="text-lg font-black uppercase tracking-wider">AI Business Insights</h4>
                     </div>
 
                     <div className="space-y-6">
-                      {aiInsights.map((insight, i) => (
-                        <div key={i} className="p-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 transition-all">
-                          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-white/60">{insight.title}</p>
-                          <p className="text-sm font-bold leading-relaxed">{insight.text}</p>
-                        </div>
-                      ))}
+                      {isLoading ? (
+                        // Skeleton Loading
+                        [1, 2].map((n) => (
+                          <div key={n} className="p-5 bg-white/5 rounded-2xl border border-white/5 animate-pulse">
+                            <div className="h-2 w-20 bg-white/20 rounded mb-3"></div>
+                            <div className="h-4 w-full bg-white/10 rounded"></div>
+                          </div>
+                        ))
+                      ) : aiInsights.length > 0 ? (
+                        aiInsights.map((insight, i) => (
+                          <div
+                            key={i}
+                            className={`p-5 backdrop-blur-md rounded-2xl border transition-all hover:bg-white/15 ${insight.type === 'negative'
+                              ? 'bg-red-500/10 border-red-500/20'
+                              : 'bg-white/10 border-white/10'
+                              }`}
+                          >
+                            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-2 ${insight.type === 'negative' ? 'text-red-300' : 'text-white/60'
+                              }`}>
+                              {toTitleCase(insight.title)}
+                            </p>
+                            <p className="text-sm font-bold leading-relaxed">
+                              {toTitleCase(insight.text)}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-white/40 italic text-center py-4">Belum ada data tersedia minggu ini.</p>
+                      )}
                     </div>
 
-                    <button className="w-full mt-8 py-4 bg-white text-primary rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:scale-[1.02] transition-all active:scale-95">
-                      Generate Laporan Full
+                    <button
+                      disabled={isLoading}
+                      className="w-full mt-8 py-4 bg-white text-primary rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+                    >
+                      {isLoading ? 'Menganalisis...' : 'Generate Laporan Full'}
                     </button>
                   </div>
                 </div>
@@ -235,13 +322,53 @@ export default function ReportPage() {
                 <div className="bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-100 dark:border-slate-800">
                   <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">Pertumbuhan Aset</h4>
                   <div className="flex items-end gap-3 mb-2">
-                    <span className="text-4xl font-black text-slate-900 dark:text-white">+24.5%</span>
-                    <span className="text-green-500 font-bold mb-1 flex items-center">
-                      <span className="material-symbols-outlined text-sm">trending_up</span>
-                      Bulan lalu
-                    </span>
+                    {isLoadingSummary ? (
+                      <div className="h-10 w-24 bg-slate-100 dark:bg-slate-800 animate-pulse rounded-lg mb-1"></div>
+                    ) : (
+                      <span className="text-4xl font-black text-slate-900 dark:text-white">
+                        {summaryData?.pertumbuhan ? (summaryData.pertumbuhan.startsWith('+') ? '' : '+') + summaryData.pertumbuhan : '+0%'}
+                      </span>
+                    )}
+                    {isLoadingSummary ? (
+                      <span className="text-gray-400 font-bold mb-1 flex items-center animate-pulse">
+                        <span className="material-symbols-outlined text-sm mr-1">sync</span>
+                        Memuat...
+                      </span>
+                    ) : (
+                      <span className={`font-bold mb-1 flex items-center ${summaryData?.pertumbuhan?.startsWith('+') ? 'text-green-500' :
+                        summaryData?.pertumbuhan?.startsWith('-') ? 'text-red-500' : 'text-slate-500'
+                        }`}>
+                        <span className="material-symbols-outlined text-sm mr-1">
+                          {summaryData?.pertumbuhan
+                            ? (summaryData.pertumbuhan.startsWith('+') ? 'trending_up' : 'trending_down')
+                            : 'trending_flat'}
+                        </span>
+                        {summaryData?.pertumbuhan || '0%'} Bulan lalu
+                      </span>
+                    )}
                   </div>
-                  <p className="text-sm text-slate-500 leading-relaxed uppercase font-bold text-[10px] tracking-wider">Performa finansial Anda berada di atas rata-rata industri bulan ini.</p>
+                  <p className="text-slate-500 leading-relaxed font-bold text-[10px] tracking-wider uppercase">
+                    {isLoadingSummary ? (
+                      <span className="animate-pulse flex items-center gap-2">
+                        <span className="h-2 w-24 bg-slate-200 rounded"></span>
+                      </span>
+                    ) : (
+                      (() => {
+                        // Ambil angka dari string pertumbuhan (misal: "+10%" -> 10, "-5%" -> -5)
+                        const nilai = parseFloat(summaryData?.pertumbuhan) || 0;
+
+                        let insight = "";
+                        if (nilai > 0) {
+                          insight = "Performa finansial Anda berada di atas rata-rata industri bulan ini.";
+                        } else if (nilai < 0) {
+                          insight = "Performa finansial Anda berada di bawah rata-rata industri bulan ini.";
+                        } else {
+                          insight = "Performa finansial Anda stabil dan sama seperti bulan sebelumnya.";
+                        }
+                        return insight;
+                      })()
+                    )}
+                  </p>
                 </div>
               </div>
             </div>

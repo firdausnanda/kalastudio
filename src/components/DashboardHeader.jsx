@@ -37,8 +37,6 @@ export default function DashboardHeader({ isSidebarOpen, setIsSidebarOpen }) {
         const res = await fetch('/api/dashboard/user');
         const json = await res.json();
 
-        console.log(json);
-
         if (json.success && json.data) {
           setUserData(json.data.data || json.data);
         }
