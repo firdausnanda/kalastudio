@@ -90,7 +90,30 @@ export async function POST(request) {
         }
       } else {
         const errText = await externalRes.text();
-        console.warn('External register warning:', externalRes.status, errText);
+        console.warn('External register warning. Attempting token refresh (login)...', externalRes.status, errText);
+
+        // Jika registrasi gagal (mungkin user sudah ada), coba login untuk "refresh" token
+        const loginRes = await fetch(`${APP_SERVICE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: session.email,
+            password: 'password123', // Default password used in register
+          }),
+        });
+
+        if (loginRes.ok) {
+          const loginData = await loginRes.json();
+          const refreshedToken = loginData?.token || loginData?.data?.token || null;
+          if (refreshedToken) {
+            await db.update(users)
+              .set({ token: refreshedToken })
+              .where(eq(users.id, userId));
+          }
+        } else {
+          const loginErrText = await loginRes.text();
+          console.error('Failed to refresh token via login:', loginRes.status, loginErrText);
+        }
       }
     } catch (extErr) {
       console.warn('Gagal mengirim ke endpoint eksternal:', extErr.message);

@@ -157,36 +157,6 @@ export async function GET(request) {
       } else {
         const errText = await externalLoginRes.text();
         console.warn('[Google External Login Warning] User potentially not registered. Attempting registration...', externalLoginRes.status, errText);
-
-        // 7. Jika login gagal (user tidak terdaftar), lakukan registrasi
-        const externalRegRes = await fetch(`${APP_SERVICE}/api/auth/register`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nama: user.name,
-            nama_bisnis: `${user.name} Business`,
-            email: user.email,
-            password: 'password123',
-            nomor_wa: '6281234567890', // Placeholder as instructed
-            kategori_bisnis: 'Lainnya',
-            plan: 'trial'
-          }),
-        });
-
-        if (externalRegRes.ok) {
-          const regData = await externalRegRes.json();
-          console.log('[Google External Registration Response]', JSON.stringify(regData, null, 2));
-          const externalToken = regData?.token || null;
-
-          if (externalToken) {
-            await db.update(users).set({ token: externalToken }).where(eq(users.id, user.id));
-          }
-        } else {
-          const regErrText = await externalRegRes.text();
-          console.error('[Google External Registration Error]', externalRegRes.status, regErrText);
-        }
       }
     } catch (extErr) {
       console.warn('[Google External Auth Error]', extErr.message);
