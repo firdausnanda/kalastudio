@@ -10,6 +10,17 @@ export default function TransactionPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [filterType, setFilterType] = useState({ value: 'all', label: 'Semua Jenis' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handleFilterTypeChange = (selected) => {
+    setIsLoading(true);
+    setFilterType(selected);
+    setCurrentPage(1);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,7 +58,9 @@ export default function TransactionPage() {
             category: trx.kategori || 'Lainnya',
             type: trx.tipe === 'pengeluaran' ? 'out' : 'in',
             amount: trx.total || 0,
-            source: trx.sumber_input === 'wa' ? 'WhatsApp AI' : (trx.sumber_input || 'Manual')
+            source: trx.sumber_input === 'wa' ? 'WhatsApp AI' : (trx.sumber_input || 'Manual'),
+            items: trx.items || [],
+            penyesuaian: trx.penyesuaian || []
           }));
           setTransactions(mapped);
         } else {
@@ -68,6 +81,15 @@ export default function TransactionPage() {
     const matchSearch = trx.desc.toLowerCase().includes(searchQuery.toLowerCase()) || trx.category.toLowerCase().includes(searchQuery.toLowerCase());
     return matchType && matchSearch;
   });
+
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -144,7 +166,7 @@ export default function TransactionPage() {
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Jenis</label>
                 <Select
                   defaultValue={filterType}
-                  onChange={setFilterType}
+                  onChange={handleFilterTypeChange}
                   options={typeOptions}
                   styles={customSelectStyles}
                   isSearchable={false}
@@ -156,7 +178,7 @@ export default function TransactionPage() {
                   type="text"
                   placeholder="Contoh: Penjualan..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                   className="w-full px-5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm font-bold dark:text-white"
                 />
               </div>
@@ -183,7 +205,7 @@ export default function TransactionPage() {
                           <p className="text-sm text-slate-400 font-bold mt-4">Memuat transaksi...</p>
                         </td>
                       </tr>
-                    ) : filteredTransactions.length === 0 ? (
+                    ) : paginatedTransactions.length === 0 ? (
                       <tr>
                         <td colSpan="5" className="px-8 py-12 text-center">
                           <div className="flex flex-col items-center justify-center text-slate-400">
@@ -193,11 +215,42 @@ export default function TransactionPage() {
                         </td>
                       </tr>
                     ) : (
-                      filteredTransactions.map((trx) => (
+                      paginatedTransactions.map((trx) => (
                         <tr key={trx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
                           <td className="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">{trx.date}</td>
                           <td className="px-8 py-6">
-                            <p className="text-sm font-black text-slate-900 dark:text-white mb-0.5">{trx.desc}</p>
+                            <p className="text-sm font-black text-slate-900 dark:text-white leading-tight">
+                              {trx.items && trx.items.length > 0
+                                ? trx.items.map(i => i.nama_item).join(', ')
+                                : trx.desc}
+                            </p>
+
+                            {/* Display Items with specific format */}
+                            {trx.items && trx.items.length > 0 && (
+                              <div className="space-y-1 mt-2 mb-2">
+                                {trx.items.map((item, idx) => (
+                                  <p key={idx} className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0"></span>
+                                    <span>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
+                                    <span className="text-slate-300 dark:text-slate-700">—</span>
+                                    <span className="font-bold text-slate-700 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/satuan</span>
+                                  </p>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Display Adjustments with better contrast */}
+                            {trx.penyesuaian && trx.penyesuaian.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                {trx.penyesuaian.map((adj, idx) => (
+                                  <span key={idx} className="flex items-center gap-1 text-[9px] text-indigo-500 dark:text-indigo-400 font-black uppercase tracking-wider bg-indigo-50/50 dark:bg-indigo-500/5 px-2 py-0.5 rounded-md border border-indigo-100/50 dark:border-indigo-500/10">
+                                    <span className="material-symbols-outlined text-[12px]">{adj.tipe === 'potongan' ? 'rebranding' : 'add_circle'}</span>
+                                    {adj.nama}: {adj.tipe === 'potongan' ? '-' : '+'}{formatCurrency(adj.nilai)}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
                             <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                               {trx.type === 'in' ? 'Pemasukan' : 'Pengeluaran'}
                             </span>
@@ -231,19 +284,39 @@ export default function TransactionPage() {
               </div>
 
               {/* Pagination Mockup */}
-              <div className="px-8 py-6 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-between">
-                <p className="text-xs font-bold text-slate-400 uppercase">Menampilkan {filteredTransactions.length} transaksi</p>
+              <div className="px-8 py-6 border-t border-slate-50 dark:border-slate-800/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs font-bold text-slate-400 uppercase">
+                  Menampilkan {filteredTransactions.length > 0 ? startIndex + 1 : 0}-
+                  {Math.min(startIndex + itemsPerPage, filteredTransactions.length)} dari {filteredTransactions.length} transaksi
+                </p>
                 <div className="flex gap-2">
-                  <button className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary transition-all disabled:opacity-50" disabled>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1 || isLoading}
+                    className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <span className="material-symbols-outlined text-xl">chevron_left</span>
                   </button>
-                  <button className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-xl text-sm font-black shadow-lg shadow-primary/20 transition-all">
-                    1
-                  </button>
-                  <button className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary text-sm font-black transition-all">
-                    2
-                  </button>
-                  <button className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary transition-all">
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      disabled={isLoading}
+                      className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-black transition-all ${currentPage === page
+                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary'
+                        }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages || totalPages === 0 || isLoading}
+                    className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <span className="material-symbols-outlined text-xl">chevron_right</span>
                   </button>
                 </div>

@@ -14,6 +14,7 @@ import Select from 'react-select';
 import DashboardHeader from '@/components/DashboardHeader';
 import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardFooter from '@/components/DashboardFooter';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -208,7 +209,9 @@ export default function Dashboard() {
             category: trx.kategori || trx.deskripsi || 'Transaksi',
             amount: formatCurrency(trx.total || 0),
             date: new Date(trx.transaksi_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
-            via: trx.sumber_input || 'Sistem'
+            via: trx.sumber_input || 'Sistem',
+            items: trx.items || [],
+            penyesuaian: trx.penyesuaian || []
           }));
 
           setTransactions(mapped);
@@ -354,9 +357,28 @@ export default function Dashboard() {
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                           <span className="material-symbols-outlined">{trx.type === 'in' ? 'add_circle' : 'remove_circle'}</span>
                         </div>
-                        <div className="flex-grow">
-                          <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{trx.category}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{trx.date} • {trx.via}</p>
+                        <div className="flex-grow min-w-0">
+                          <p className="text-sm font-black text-slate-900 dark:text-white leading-tight truncate">
+                            {trx.items && trx.items.length > 0
+                              ? trx.items.map(i => i.nama_item).join(', ')
+                              : trx.category}
+                          </p>
+                          {trx.items && trx.items.length > 0 && (
+                            <div className="space-y-0.5 mt-1.5">
+                              {trx.items.map((item, idx) => (
+                                <p key={idx} className="text-[10px] text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1.5">
+                                  <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700 flex-shrink-0"></span>
+                                  <span>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
+                                  <span className="text-slate-200 dark:text-slate-800">—</span>
+                                  <span className="font-bold text-slate-600 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/satuan</span>
+                                </p>
+                              ))}
+                            </div>
+                          )}
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[12px]">schedule</span>
+                            {trx.date} • {trx.via}
+                          </p>
                         </div>
                         <div className="text-right">
                           <p className={`text-sm font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
@@ -370,9 +392,13 @@ export default function Dashboard() {
                   )}
                 </div>
                 {transactions.length > 0 && (
-                  <button className="w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-bold text-primary hover:bg-primary/5 transition-colors">
+                  <Link
+                    href="/transaksi"
+                    className="flex items-center justify-center w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-black text-primary hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all active:scale-[0.98]"
+                  >
                     Lihat Semua Transaksi
-                  </button>
+                    <span className="material-symbols-outlined ml-2 text-lg">arrow_forward</span>
+                  </Link>
                 )}
               </div>
             </div>

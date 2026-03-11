@@ -48,7 +48,7 @@ export async function GET(request) {
 
     // 3. Fetch API Eksternal
     const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
-    const externalUrl = `${APP_SERVICE}/api/transaksi/${phone}`;
+    const externalUrl = `${APP_SERVICE}/api/transaksi/${phone}/full`;
 
     const externalRes = await fetch(externalUrl, {
       method: 'GET',
