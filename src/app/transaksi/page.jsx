@@ -9,6 +9,7 @@ import DashboardFooter from '@/components/DashboardFooter';
 export default function TransactionPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [filterType, setFilterType] = useState({ value: 'all', label: 'Semua Jenis' });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,15 +31,43 @@ export default function TransactionPage() {
     { value: 'out', label: 'Pengeluaran' },
   ];
 
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const transactions = [
-    { id: 1, date: '09 Mar 2026', desc: 'Penjualan Kopi Susu', category: 'Penjualan', type: 'in', amount: 450000, source: 'WhatsApp AI' },
-    { id: 2, date: '09 Mar 2026', desc: 'Beli Biji Kopi Arabika', category: 'Operasional', type: 'out', amount: 1200000, source: 'Manual' },
-    { id: 3, date: '08 Mar 2026', desc: 'Sewa Tempat Maret', category: 'Operasional', type: 'out', amount: 3000000, source: 'Manual' },
-    { id: 4, date: '08 Mar 2026', desc: 'Penjualan Snack Box', category: 'Penjualan', type: 'in', amount: 850000, source: 'WhatsApp AI' },
-    { id: 5, date: '07 Mar 2026', desc: 'Gaji Karyawan', category: 'Gaji', type: 'out', amount: 2500000, source: 'Manual' },
-    { id: 6, date: '07 Mar 2026', desc: 'Tips Pelanggan', category: 'Lainnya', type: 'in', amount: 50000, source: 'WhatsApp AI' },
-  ];
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await fetch('/api/dashboard/transaksi');
+        const data = await res.json();
+        if (data && data.success && data.data && Array.isArray(data.data.data)) {
+          const mapped = data.data.data.map(trx => ({
+            id: trx.id || Math.random(),
+            date: new Date(trx.transaksi_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+            desc: trx.deskripsi || trx.kategori || 'Transaksi',
+            category: trx.kategori || 'Lainnya',
+            type: trx.tipe === 'pengeluaran' ? 'out' : 'in',
+            amount: trx.total || 0,
+            source: trx.sumber_input === 'wa' ? 'WhatsApp AI' : (trx.sumber_input || 'Manual')
+          }));
+          setTransactions(mapped);
+        } else {
+          setTransactions([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+        setTransactions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTransactions();
+  }, []);
+
+  const filteredTransactions = transactions.filter(trx => {
+    const matchType = filterType.value === 'all' || trx.type === filterType.value;
+    const matchSearch = trx.desc.toLowerCase().includes(searchQuery.toLowerCase()) || trx.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchType && matchSearch;
+  });
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -126,6 +155,8 @@ export default function TransactionPage() {
                 <input
                   type="text"
                   placeholder="Contoh: Penjualan..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm font-bold dark:text-white"
                 />
               </div>
@@ -145,45 +176,63 @@ export default function TransactionPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
-                    {transactions.map((trx) => (
-                      <tr key={trx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
-                        <td className="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">{trx.date}</td>
-                        <td className="px-8 py-6">
-                          <p className="text-sm font-black text-slate-900 dark:text-white mb-0.5">{trx.desc}</p>
-                          <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                            {trx.type === 'in' ? 'Pemasukan' : 'Pengeluaran'}
-                          </span>
+                    {isLoading ? (
+                      <tr>
+                        <td colSpan="5" className="px-8 py-12 text-center">
+                          <span className="material-symbols-outlined animate-spin text-primary text-4xl">refresh</span>
+                          <p className="text-sm text-slate-400 font-bold mt-4">Memuat transaksi...</p>
                         </td>
-                        <td className="px-8 py-6">
-                          <p className={`text-base font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
-                            {trx.type === 'in' ? '+' : '-'}{formatCurrency(trx.amount)}
-                          </p>
-                        </td>
-                        <td className="px-8 py-6 text-center">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/5 dark:bg-primary/10 text-primary text-[10px] font-bold rounded-lg uppercase tracking-wider border border-primary/10">
-                            {trx.source === 'WhatsApp AI' && <span className="material-symbols-outlined text-xs">auto_awesome</span>}
-                            {trx.source}
-                          </span>
-                        </td>
-                        <td className="px-8 py-6">
-                          <div className="flex items-center justify-center gap-2">
-                            <button className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all active:scale-90" title="Edit">
-                              <span className="material-symbols-outlined text-xl">edit_note</span>
-                            </button>
-                            <button className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all active:scale-90" title="Hapus">
-                              <span className="material-symbols-outlined text-xl">delete</span>
-                            </button>
+                      </tr>
+                    ) : filteredTransactions.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" className="px-8 py-12 text-center">
+                          <div className="flex flex-col items-center justify-center text-slate-400">
+                            <span className="material-symbols-outlined text-5xl mb-4 opacity-50">receipt_long</span>
+                            <p className="text-sm font-bold">Belum ada transaksi ditemukan.</p>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredTransactions.map((trx) => (
+                        <tr key={trx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                          <td className="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">{trx.date}</td>
+                          <td className="px-8 py-6">
+                            <p className="text-sm font-black text-slate-900 dark:text-white mb-0.5">{trx.desc}</p>
+                            <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${trx.type === 'in' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                              {trx.type === 'in' ? 'Pemasukan' : 'Pengeluaran'}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <p className={`text-base font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
+                              {trx.type === 'in' ? '+' : '-'}{formatCurrency(trx.amount)}
+                            </p>
+                          </td>
+                          <td className="px-8 py-6 text-center">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/5 dark:bg-primary/10 text-primary text-[10px] font-bold rounded-lg uppercase tracking-wider border border-primary/10">
+                              {trx.source === 'WhatsApp AI' && <span className="material-symbols-outlined text-xs">auto_awesome</span>}
+                              {trx.source}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <button className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all active:scale-90" title="Edit">
+                                <span className="material-symbols-outlined text-xl">edit_note</span>
+                              </button>
+                              <button className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all active:scale-90" title="Hapus">
+                                <span className="material-symbols-outlined text-xl">delete</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
 
               {/* Pagination Mockup */}
               <div className="px-8 py-6 border-t border-slate-50 dark:border-slate-800/50 flex items-center justify-between">
-                <p className="text-xs font-bold text-slate-400 uppercase">Menampilkan 6 dari 42 transaksi</p>
+                <p className="text-xs font-bold text-slate-400 uppercase">Menampilkan {filteredTransactions.length} transaksi</p>
                 <div className="flex gap-2">
                   <button className="w-10 h-10 flex items-center justify-center bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-primary transition-all disabled:opacity-50" disabled>
                     <span className="material-symbols-outlined text-xl">chevron_left</span>
