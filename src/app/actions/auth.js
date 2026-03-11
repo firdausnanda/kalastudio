@@ -178,6 +178,39 @@ export async function registerAction(prevState, formData) {
       maxAge: 60 * 60 * 24,
     });
 
+    // Hit endpoint eksternal register & simpan token-nya
+    try {
+      const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
+      const externalRegRes = await fetch(`${APP_SERVICE}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nama: name,
+          nama_bisnis: `${name} Business`,
+          email: email,
+          password: password,
+          nomor_wa: '6281234567890',
+          kategori_bisnis: 'Lainnya',
+          plan: 'trial'
+        }),
+      });
+
+      if (externalRegRes.ok) {
+        const regData = await externalRegRes.json();
+        const externalToken = regData?.token || null;
+        if (externalToken) {
+          await db.update(users).set({ token: externalToken }).where(eq(users.id, userId));
+        }
+      } else {
+        const errText = await externalRegRes.text();
+        console.warn('[External Register Warning]', externalRegRes.status, errText);
+      }
+    } catch (extErr) {
+      console.warn('[External Register Error]', extErr.message);
+    }
+
     // Akun baru → profil belum dilengkapi
     return { success: true, profileComplete: false };
   } catch (error) {
