@@ -21,7 +21,7 @@ export default function DashboardSidebar({ isSidebarOpen }) {
             { name: 'Ringkasan', icon: 'grid_view', to: '/dashboard' },
             { name: 'Transaksi', icon: 'receipt_long', to: '/transaksi' },
             { name: 'Laporan AI', icon: 'auto_awesome', to: '/laporan' },
-            { name: 'Integrasi', icon: 'hub', to: '/integrasi' },
+            // { name: 'Integrasi', icon: 'hub', to: '/integrasi' },
           ].map((item, i) => {
             const isActive = pathname === item.to;
             return (
@@ -41,7 +41,7 @@ export default function DashboardSidebar({ isSidebarOpen }) {
           <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/10">
             <p className="text-xs font-bold text-primary uppercase tracking-wider mb-2">WhatsApp AI Ready</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">Siap mencatat setiap pesan suara Anda menjadi laporan.</p>
-            <button className="w-full py-2 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold shadow-sm">Cek Integrasi</button>
+            {/* <Link href="/integrasi" className="w-full py-2 px-2 bg-white dark:bg-slate-800 rounded-lg text-xs font-bold shadow-sm">Cek Integrasi</Link> */}
           </div>
         </div>
       </div>

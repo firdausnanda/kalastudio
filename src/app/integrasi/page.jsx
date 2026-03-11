@@ -8,6 +8,9 @@ export default function IntegrationPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -23,17 +26,81 @@ export default function IntegrationPage() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleConnect = () => {
-    setIsConnecting(true);
-    setTimeout(() => {
-      setIsConnecting(false);
-      setIsConnected(true);
-    }, 3000);
+  const fetchQrCode = async () => {
+    try {
+      const res = await fetch('/api/wa/qr');
+      const json = await res.json();
+      if (json.success && json.data && json.data.qr) {
+        setQrCodeUrl(json.data.qr);
+      }
+    } catch (err) {
+      console.error('Failed to fetch QR:', err);
+    }
   };
 
-  const handleDisconnect = () => {
+  const fetchStatus = async () => {
+    try {
+      const res = await fetch('/api/wa/status');
+      const json = await res.json();
+      if (json.success && json.data) {
+        const connected = json.data.status === 'connected' || json.data.connected === true;
+        setIsConnected(connected);
+        setPhone(json.data.phone || null);
+
+        if (!connected) {
+          fetchQrCode();
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch status:', err);
+    } finally {
+      setIsInitialLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  useEffect(() => {
+    let intervalId;
+    if (!isConnected && !isInitialLoading) {
+      // Polling every 5 seconds if not connected
+      intervalId = setInterval(() => {
+        fetchStatus();
+      }, 5000);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isConnected, isInitialLoading]);
+
+  const handleConnect = async () => {
+    setIsConnecting(true);
+    try {
+      const res = await fetch('/api/wa/reconnect', { method: 'POST' });
+      const json = await res.json();
+      if (json.success) {
+        await fetchStatus();
+      }
+    } catch (error) {
+      console.error('Reconnect failed:', error);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleDisconnect = async () => {
     if (confirm('Apakah Anda yakin ingin memutuskan koneksi WhatsApp?')) {
-      setIsConnected(false);
+      try {
+        await fetch('/api/wa/logout', { method: 'POST' });
+        setIsConnected(false);
+        setPhone(null);
+        setQrCodeUrl(null);
+        fetchQrCode();
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
     }
   };
 
@@ -82,12 +149,15 @@ export default function IntegrationPage() {
                           </div>
                         ) : (
                           <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
-                            {/* Mock QR Code */}
-                            <div className="grid grid-cols-4 gap-1 opacity-20 group-hover:opacity-40 transition-opacity">
-                              {[...Array(16)].map((_, i) => (
-                                <div key={i} className="w-8 h-8 bg-slate-900 dark:bg-white rounded-sm"></div>
-                              ))}
-                            </div>
+                            {qrCodeUrl ? (
+                              <img src={qrCodeUrl} alt="QR Code" className="w-full h-full object-contain rounded-xl" />
+                            ) : (
+                              <div className="grid grid-cols-4 gap-1 opacity-20 group-hover:opacity-40 transition-opacity">
+                                {[...Array(16)].map((_, i) => (
+                                  <div key={i} className="w-8 h-8 bg-slate-900 dark:bg-white rounded-sm"></div>
+                                ))}
+                              </div>
+                            )}
                             <div className="absolute inset-0 flex items-center justify-center">
                               <span className="material-symbols-outlined text-6xl text-primary opacity-20 group-hover:opacity-100 transition-all group-hover:scale-110">qr_code_scanner</span>
                             </div>
@@ -113,7 +183,7 @@ export default function IntegrationPage() {
                       <span className="material-symbols-outlined text-5xl">check_circle</span>
                     </div>
                     <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">WhatsApp Aktif!</h3>
-                    <p className="text-sm text-green-600 dark:text-green-400 font-bold uppercase tracking-widest mb-8">Nomor Terhubung: +62 812-****-4321</p>
+                    <p className="text-sm text-green-600 dark:text-green-400 font-bold uppercase tracking-widest mb-8">Nomor Terhubung: {phone || '+62 8**-****-****'}</p>
                     <div className="space-y-4 w-full">
                       <button className="w-full py-4 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-2xl font-bold text-sm hover:bg-slate-100 transition-all">
                         Uji Coba Kirim Pesan

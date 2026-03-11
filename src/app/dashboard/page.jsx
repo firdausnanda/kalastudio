@@ -1,12 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer
 } from 'recharts';
 import Select from 'react-select';
@@ -31,13 +32,6 @@ export default function Dashboard() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const stats = [
-    { label: 'Saldo Saat Ini', value: 'Rp 12.450.000', icon: 'account_balance_wallet', color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Pemasukan (Bulan Ini)', value: 'Rp 8.200.000', icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
-    { label: 'Pengeluaran (Bulan Ini)', value: 'Rp 3.750.000', icon: 'trending_down', color: 'text-red-500', bg: 'bg-red-500/10' },
-    { label: 'Transaksi WA', value: '142 Pesan', icon: 'chat', color: 'text-blue-500', bg: 'bg-blue-500/10' },
-  ];
 
   const [timeRange, setTimeRange] = useState({ value: '7', label: '7 Hari Terakhir' });
 
@@ -118,17 +112,45 @@ export default function Dashboard() {
   };
 
   const chartData = [
-    { name: 'Sen', value: 7000000 },
-    { name: 'Sel', value: 7500000 },
-    { name: 'Rab', value: 6000000 },
-    { name: 'Kam', value: 2300000 },
-    { name: 'Jum', value: 500000 },
-    { name: 'Sab', value: 1000000 },
-    { name: 'Min', value: 1500000 },
+    { name: 'Sen', pemasukan: 7000000, pengeluaran: 5000000 },
+    { name: 'Sel', pemasukan: 7500000, pengeluaran: 3000000 },
+    { name: 'Rab', pemasukan: 6000000, pengeluaran: 4000000 },
+    { name: 'Kam', pemasukan: 2300000, pengeluaran: 1000000 },
+    { name: 'Jum', pemasukan: 5000000, pengeluaran: 4000000 },
+    { name: 'Sab', pemasukan: 1000000, pengeluaran: 500000 },
+    { name: 'Min', pemasukan: 1500000, pengeluaran: 1000000 },
   ];
 
   const [transactions, setTransactions] = useState([]);
   const [isLoadingRx, setIsLoadingRx] = useState(true);
+
+  const [stats, setStats] = useState([
+    { label: 'Saldo Saat Ini', value: 'Rp...', icon: 'account_balance_wallet', color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Pemasukan', value: 'Rp...', icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
+    { label: 'Pengeluaran', value: 'Rp...', icon: 'trending_down', color: 'text-red-500', bg: 'bg-red-500/10' },
+    { label: 'Transaksi WA', value: '... Pesan', icon: 'chat', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  ]);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const res = await fetch('/api/dashboard/summary');
+        const data = await res.json();
+        if (data.success && data.data) {
+          const s = data.data;
+          setStats([
+            { label: 'Saldo Saat Ini', value: formatCurrency(s.laba_bersih || 0), icon: 'account_balance_wallet', color: 'text-primary', bg: 'bg-primary/10' },
+            { label: `Pemasukan (${s.bulan || 'Bulan Ini'})`, value: formatCurrency(s.total_pemasukan || 0), icon: 'trending_up', color: 'text-green-500', bg: 'bg-green-500/10' },
+            { label: `Pengeluaran (${s.bulan || 'Bulan Ini'})`, value: formatCurrency(s.total_pengeluaran || 0), icon: 'trending_down', color: 'text-red-500', bg: 'bg-red-500/10' },
+            { label: 'Transaksi WA', value: `${s.kuota?.terpakai || s.jumlah_transaksi || 0} Pesan`, icon: 'chat', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          ]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch summary:', error);
+      }
+    };
+    fetchSummary();
+  }, []);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -211,7 +233,7 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-xl font-bold dark:text-white">Tren Keuangan</h3>
                   <div className="w-48">
-                    {isMounted ? (
+                    {/* {isMounted ? (
                       <Select
                         defaultValue={timeRange}
                         onChange={setTimeRange}
@@ -221,23 +243,18 @@ export default function Dashboard() {
                       />
                     ) : (
                       <div className="h-[38px] w-full bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse"></div>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
                 {/* Visual Chart with Recharts */}
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
+                    <BarChart
                       data={chartData}
                       margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+                      barSize={32}
                     >
-                      <defs>
-                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#9C413D" stopOpacity={0.3} />
-                          <stop offset="95%" stopColor="#9C413D" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.5} />
                       <XAxis
                         dataKey="name"
@@ -248,7 +265,7 @@ export default function Dashboard() {
                       />
                       <YAxis hide domain={['auto', 'auto']} />
                       <Tooltip
-                        formatter={(value) => [formatCurrency(value), 'Nilai']}
+                        formatter={(value, name) => [formatCurrency(value), name]}
                         contentStyle={{
                           backgroundColor: '#0f172a',
                           border: 'none',
@@ -258,18 +275,27 @@ export default function Dashboard() {
                           fontWeight: '700'
                         }}
                         itemStyle={{ color: '#fff' }}
-                        cursor={{ stroke: '#9C413D', strokeWidth: 2 }}
+                        cursor={{ fill: 'transparent' }}
                       />
-                      <Area
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#9C413D"
-                        strokeWidth={4}
-                        fillOpacity={1}
-                        fill="url(#colorValue)"
+                      <Legend
+                        iconType="circle"
+                        wrapperStyle={{ fontSize: '12px', fontWeight: '600', color: '#94a3b8', paddingTop: '10px' }}
+                      />
+                      <Bar
+                        dataKey="pemasukan"
+                        name="Pemasukan"
+                        fill="#22c55e"
+                        radius={[4, 4, 4, 4]}
                         isAnimationActive={false}
                       />
-                    </AreaChart>
+                      <Bar
+                        dataKey="pengeluaran"
+                        name="Pengeluaran"
+                        fill="#ef4444"
+                        radius={[4, 4, 4, 4]}
+                        isAnimationActive={false}
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
@@ -303,9 +329,11 @@ export default function Dashboard() {
                     <div className="text-center py-8 text-slate-400">Belum ada transaksi</div>
                   )}
                 </div>
-                <button className="w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-bold text-primary hover:bg-primary/5 transition-colors">
-                  Lihat Semua Transaksi
-                </button>
+                {transactions.length > 0 && (
+                  <button className="w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl text-sm font-bold text-primary hover:bg-primary/5 transition-colors">
+                    Lihat Semua Transaksi
+                  </button>
+                )}
               </div>
             </div>
 

@@ -15,6 +15,7 @@ const BUSINESS_TYPES = [
   'Pendidikan & Kursus',
   'Kesehatan & Kecantikan',
   'Properti',
+  'Keperluan Pribadi',
   'Logistik & Pengiriman',
   'Lainnya',
 ];
