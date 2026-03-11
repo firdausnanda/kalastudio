@@ -358,7 +358,7 @@ export default function Dashboard() {
                           <span className="material-symbols-outlined">{trx.type === 'in' ? 'add_circle' : 'remove_circle'}</span>
                         </div>
                         <div className="flex-grow min-w-0">
-                          <p className="text-sm font-black text-slate-900 dark:text-white leading-tight truncate">
+                          <p className="text-sm font-black text-slate-900 dark:text-white leading-tight truncate capitalize">
                             {trx.items && trx.items.length > 0
                               ? trx.items.map(i => i.nama_item).join(', ')
                               : trx.category}
@@ -368,20 +368,19 @@ export default function Dashboard() {
                               {trx.items.map((item, idx) => (
                                 <p key={idx} className="text-[10px] text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap overflow-hidden text-ellipsis flex items-center gap-1.5">
                                   <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700 flex-shrink-0"></span>
-                                  <span>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
+                                  <span className='capitalize'>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
                                   <span className="text-slate-200 dark:text-slate-800">—</span>
-                                  <span className="font-bold text-slate-600 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/satuan</span>
+                                  <span className="font-bold text-slate-600 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}</span>
                                 </p>
                               ))}
                             </div>
                           )}
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[12px]">schedule</span>
                             {trx.date} • {trx.via}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className={`text-sm font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
+                          <p className={`text-[12px] font-black ${trx.type === 'in' ? 'text-green-500' : 'text-red-500'}`}>
                             {trx.type === 'in' ? '+' : '-'}{trx.amount.replace('Rp', '')}
                           </p>
                         </div>

@@ -219,7 +219,7 @@ export default function TransactionPage() {
                         <tr key={trx.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
                           <td className="px-8 py-6 text-sm font-bold text-slate-500 dark:text-slate-400">{trx.date}</td>
                           <td className="px-8 py-6">
-                            <p className="text-sm font-black text-slate-900 dark:text-white leading-tight">
+                            <p className="text-sm font-black text-slate-900 dark:text-white leading-tight capitalize">
                               {trx.items && trx.items.length > 0
                                 ? trx.items.map(i => i.nama_item).join(', ')
                                 : trx.desc}
@@ -231,7 +231,7 @@ export default function TransactionPage() {
                                 {trx.items.map((item, idx) => (
                                   <p key={idx} className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2">
                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0"></span>
-                                    <span>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
+                                    <span className='capitalize'>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
                                     <span className="text-slate-300 dark:text-slate-700">—</span>
                                     <span className="font-bold text-slate-700 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/satuan</span>
                                   </p>
