@@ -233,7 +233,7 @@ export default function TransactionPage() {
                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 flex-shrink-0"></span>
                                     <span className='capitalize'>{item.nama_item} ({item.kuantitas}{item.satuan ? ' ' + item.satuan : ''})</span>
                                     <span className="text-slate-300 dark:text-slate-700">—</span>
-                                    <span className="font-bold text-slate-700 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/satuan</span>
+                                    <span className="font-bold text-slate-700 dark:text-slate-300 italic">{formatCurrency(item.harga_satuan || 0)}/{item.satuan ? ' ' + item.satuan : ''}</span>
                                   </p>
                                 ))}
                               </div>
