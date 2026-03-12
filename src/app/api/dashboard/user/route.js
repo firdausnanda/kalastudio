@@ -46,7 +46,7 @@ export async function GET() {
     }
 
     const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
-    const externalUrl = `${APP_SERVICE}/api/admin/user/${phone}`;
+    const externalUrl = `${APP_SERVICE}/api/users/${phone}`;
 
     const externalRes = await fetch(externalUrl, {
       method: 'GET',
