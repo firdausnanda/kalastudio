@@ -68,7 +68,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }
-export async function POST(request) {
+export async function PATCH(request) {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get('kalastudio_session')?.value;
@@ -106,10 +106,10 @@ export async function POST(request) {
     }
 
     const APP_SERVICE = process.env.APP_SERVICE || 'https://kalastudio-prod.up.railway.app';
-    const externalUrl = `${APP_SERVICE}/api/admin/user/${phone}`;
+    const externalUrl = `${APP_SERVICE}/api/users/${phone}`;
 
     const externalRes = await fetch(externalUrl, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -123,10 +123,12 @@ export async function POST(request) {
     }
 
     const externalData = await externalRes.json();
+    console.log(externalData);
+
     return NextResponse.json({ success: true, data: externalData });
 
   } catch (error) {
-    console.error('API /dashboard/user (POST) error:', error);
+    console.error('API /dashboard/user (PATCH) error:', error);
     return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 });
   }
 }
