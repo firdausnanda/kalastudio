@@ -18,7 +18,7 @@ export default function PricingPage() {
       monthlyPrice: 99000,
       annualPrice: 79000,
       features: [
-        "100 Token",
+        "300 Token",
         "Hingga 500 Transaksi / Bulan",
         "Laporan Laba Rugi Dasar",
         "Penyimpanan Data 1 Tahun",

@@ -160,11 +160,21 @@ export default function BusinessProfilePage() {
         <div class="space-y-4 text-left p-2">
           <div>
             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Kata Sandi Lama</label>
-            <input id="swal-input1" type="password" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm" placeholder="Masukkan kata sandi lama">
+            <div class="relative">
+              <input id="swal-input1" type="password" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm" placeholder="Masukkan kata sandi lama">
+              <button type="button" onclick="const input = document.getElementById('swal-input1'); const icon = this.querySelector('.material-symbols-outlined'); if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; } else { input.type = 'password'; icon.textContent = 'visibility'; }" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">visibility</span>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Kata Sandi Baru</label>
-            <input id="swal-input2" type="password" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm" placeholder="Masukkan kata sandi baru">
+            <div class="relative">
+              <input id="swal-input2" type="password" class="w-full px-5 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm" placeholder="Masukkan kata sandi baru">
+              <button type="button" onclick="const input = document.getElementById('swal-input2'); const icon = this.querySelector('.material-symbols-outlined'); if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; } else { input.type = 'password'; icon.textContent = 'visibility'; }" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">visibility</span>
+              </button>
+            </div>
           </div>
         </div>
       `,
