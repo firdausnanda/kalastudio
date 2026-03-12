@@ -7,56 +7,74 @@ import BottomCTA from '@/components/BottomCTA';
 export default function PricingPage() {
   const [isAnnual, setIsAnnual] = useState(true);
 
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchPlans();
   }, []);
 
-  const plans = [
-    {
-      name: "Starter",
-      desc: "Cocok untuk UMKM baru yang ingin mulai digitalisasi keuangan.",
-      monthlyPrice: 99000,
-      annualPrice: 79000,
-      features: [
-        "300 Token",
-        "Hingga 500 Transaksi / Bulan",
-        "Laporan Laba Rugi Dasar",
-        "Penyimpanan Data 1 Tahun",
-        "Dukungan WhatsApp"
-      ],
-      cta: "Mulai Gratis",
-      popular: false
-    },
-    {
-      name: "Business",
-      desc: "Pilihan terbaik untuk bisnis yang sedang berkembang pesat.",
-      monthlyPrice: 249000,
-      annualPrice: 199000,
-      features: [
-        "1000 Token",
-        "Transaksi Tak Terbatas",
-        "Laporan Lengkap & Ekspor Excel",
-        "Manajemen Stok Produk",
-        "Dukungan Prioritas 24/7"
-      ],
-      cta: "Coba Sekarang",
-      popular: true
-    },
-    {
-      name: "Professional",
-      desc: "Solusi lengkap untuk korporasi dengan kebutuhan integrasi.",
-      isCustomPrice: true,
-      features: [
-        "Custom Dashboard & Branding",
-        "Integrasi API & Webhook",
-        "Dedicated Account Manager",
-        "Audit Trail Keuangan",
-        "SLA 99.9% Uptime"
-      ],
-      cta: "Hubungi Sales",
-      popular: false
+  const fetchPlans = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/packages');
+      if (!response.ok) {
+        throw new Error('Gagal mengambil data paket.');
+      }
+      const data = await response.json();
+      const packages = data.data || [];
+
+      // Map API data to UI structure
+      const mappedPlans = packages.map(pkg => {
+        const monthlyPrice = pkg.prices.find(p => p.billing_cycle === 'monthly')?.price || 0;
+        const annualPrice = pkg.prices.find(p => p.billing_cycle === 'annually')?.price || 0;
+
+        let features = [];
+        try {
+          features = typeof pkg.features === 'string' ? JSON.parse(pkg.features) : pkg.features;
+        } catch (e) {
+          console.error('Error parsing features:', e);
+        }
+
+        return {
+          name: pkg.name,
+          desc: pkg.description,
+          monthlyPrice: monthlyPrice,
+          annualPrice: annualPrice,
+          features: features,
+          cta: pkg.name === 'Professional' ? 'Hubungi Sales' : 'Coba Sekarang',
+          popular: pkg.name === 'Business',
+          isCustomPrice: pkg.name === 'Professional'
+        };
+      });
+
+      let professionalPlan = {
+        annualPrice: 'Custom',
+        monthlyPrice: 'Custom',
+        cta: 'Hubungi Sales',
+        desc: 'Solusi lengkap untuk korporasi dengan kebutuhan integrasi.',
+        features: [
+          'Custom Dashboard & Branding',
+          'Integrasi API',
+          'Dedicated Account Manager',
+          'Audit Trail Keuangan',
+          'SLA 99.9% Uptime',
+        ],
+        name: 'Professional',
+        popular: false,
+        isCustomPrice: true
+      };
+
+      setPlans([...mappedPlans, professionalPlan]);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const faqs = [
     {
@@ -116,62 +134,85 @@ export default function PricingPage() {
         {/* Pricing Cards */}
         <section className="py-24 -mt-24 relative z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-8">
-              {plans.map((plan, idx) => (
-                <div
-                  key={idx}
-                  className={`dark:text-white bg-white dark:bg-slate-900 p-10 rounded-[40px] border-2 transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl flex flex-col ${plan.popular
-                    ? 'border-primary shadow-2xl scale-105 relative dark:shadow-primary/10'
-                    : 'border-slate-100 dark:border-slate-800 shadow-xl'
-                    }`}
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-[40px] border-2 border-slate-100 dark:border-slate-800 shadow-xl">
+                <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-slate-500 font-bold">Memuat data paket...</p>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-[40px] border-2 border-red-100 dark:border-red-900/30 shadow-xl text-center">
+                <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
+                <p className="text-slate-900 dark:text-white font-black text-xl mb-2">Ups! Terjadi Kesalahan</p>
+                <p className="text-slate-500 mb-6">{error}</p>
+                <button
+                  onClick={fetchPlans}
+                  className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all"
                 >
-                  {plan.popular && (
-                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-black px-6 py-2 rounded-full uppercase tracking-widest shadow-lg shadow-primary/30">
-                      Paling Populer
-                    </div>
-                  )}
-
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{plan.desc}</p>
-                  </div>
-
-                  <div className="mb-8">
-                    {plan.isCustomPrice ? (
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl md:text-5xl font-black">Custom</span>
+                  Coba Lagi
+                </button>
+              </div>
+            ) : plans.length == 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-[40px] border-2 border-slate-100 dark:border-slate-800 shadow-xl">
+                <p className="text-slate-500 font-bold">Tidak ada paket tersedia saat ini.</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-8">
+                {plans.map((plan, idx) => (
+                  <div
+                    key={idx}
+                    className={`dark:text-white bg-white dark:bg-slate-900 p-10 rounded-[40px] border-2 transition-all duration-500 hover:-translate-y-4 hover:shadow-2xl flex flex-col ${plan.popular
+                      ? 'border-primary shadow-2xl scale-105 relative dark:shadow-primary/10'
+                      : 'border-slate-100 dark:border-slate-800 shadow-xl'
+                      }`}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-black px-6 py-2 rounded-full uppercase tracking-widest shadow-lg shadow-primary/30">
+                        Paling Populer
                       </div>
-                    ) : (
-                      <>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-4xl md:text-5xl font-black">{formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}</span>
-                          <span className="text-slate-500 font-bold">/bln</span>
-                        </div>
-                        {isAnnual && (
-                          <p className="text-xs text-slate-400 mt-2 font-medium">Ditagih tahunan: {formatPrice(plan.annualPrice * 12)}</p>
-                        )}
-                      </>
                     )}
+
+                    <div className="mb-8">
+                      <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{plan.desc}</p>
+                    </div>
+
+                    <div className="mb-8">
+                      {plan.isCustomPrice ? (
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-4xl md:text-5xl font-black">Custom</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl md:text-5xl font-black">{formatPrice(isAnnual ? plan.annualPrice : plan.monthlyPrice)}</span>
+                            <span className="text-slate-500 font-bold">/bln</span>
+                          </div>
+                          {isAnnual && (
+                            <p className="text-xs text-slate-400 mt-2 font-medium">Ditagih tahunan: {formatPrice(plan.annualPrice * 12)}</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <ul className="space-y-4 mb-10 flex-grow">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+                          <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button className={`w-full py-5 rounded-2xl font-black text-lg transition-all duration-300 ${plan.popular
+                      ? 'bg-primary text-white shadow-xl shadow-primary/30 hover:shadow-2xl hover:bg-primary/90'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
+                      }`}>
+                      {plan.cta}
+                    </button>
                   </div>
-
-                  <ul className="space-y-4 mb-10 flex-grow">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
-                        <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button className={`w-full py-5 rounded-2xl font-black text-lg transition-all duration-300 ${plan.popular
-                    ? 'bg-primary text-white shadow-xl shadow-primary/30 hover:shadow-2xl hover:bg-primary/90'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700'
-                    }`}>
-                    {plan.cta}
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

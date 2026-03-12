@@ -17,6 +17,7 @@ export const users = mysqlTable('users', {
   googleId: varchar('google_id', { length: 255 }).unique(),
   avatar: text('avatar'),
   token: text('token'),
+  tokenPayment: text('token_payment'),
   roleId: varchar('role_id', { length: 36 }).references(() => roles.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
